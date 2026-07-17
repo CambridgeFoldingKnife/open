@@ -1,0 +1,14 @@
+{
+  "name": "rehab-opening-assistant",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently -n api,web,admin -c blue,green,magenta \"npm run dev -w @opening/api\" \"npm run dev -w @opening/web\" \"npm run dev -w @opening/admin\"",
+    "dev:mini": "npm run dev:weapp -w @opening/mini",
+    "build": "npm run build -w @opening/shared && npm run build -w @opening/api && npm run build -w @opening/web && npm run build -w @opening/admin && npm run build:weapp -w @opening/mini",
+    "test": "npm run test -w @opening/api",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {"@tarojs/taro-loader":"4.0.9","concurrently": "^9.1.2"}
+}

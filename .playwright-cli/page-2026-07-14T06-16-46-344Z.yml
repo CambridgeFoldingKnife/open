@@ -1,0 +1,91 @@
+- generic [ref=e52]:
+  - banner [ref=e53]:
+    - button "衡 开馆助手 REHAB OPENING FILE" [ref=e54] [cursor=pointer]:
+      - generic [ref=e55]: 衡
+      - generic [ref=e56]:
+        - generic [ref=e57]: 开馆助手
+        - generic [ref=e58]: REHAB OPENING FILE
+    - generic [ref=e59]: 基础测算 → 正式报价 → 推广增长
+    - generic [ref=e64]:
+      - generic [ref=e65]: 测
+      - generic [ref=e66]:
+        - generic [ref=e67]: 测试投资人
+        - generic [ref=e68]: 139****2222
+  - main [ref=e102]:
+    - complementary [ref=e103]:
+      - button "← 返回项目" [ref=e104] [cursor=pointer]
+      - text: OPENING ASSESSMENT
+      - heading "建立你的 开馆基础档案" [level=2] [ref=e105]: 建立你的开馆基础档案
+      - list [ref=e106]:
+        - listitem [ref=e107]:
+          - generic [ref=e108]: ✓
+          - generic [ref=e109]:
+            - generic [ref=e110]: 能力坐标
+            - generic [ref=e111]: 专业与商业能力
+        - listitem [ref=e112]:
+          - generic [ref=e113]: ✓
+          - generic [ref=e114]:
+            - generic [ref=e115]: 场地与投入
+            - generic [ref=e116]: 面积、租金与预算
+        - listitem [ref=e117]:
+          - generic [ref=e118]: "3"
+          - generic [ref=e119]:
+            - generic [ref=e120]: 客群与团队
+            - generic [ref=e121]: 服务对象与开馆时间
+        - listitem [ref=e122]:
+          - generic [ref=e123]: "4"
+          - generic [ref=e124]:
+            - generic [ref=e125]: 确认提交
+            - generic [ref=e126]: 生成定位与报价
+      - paragraph [ref=e127]: 你的回答只用于本次开馆测算和已授权的顾问跟进。
+    - generic [ref=e128]:
+      - generic [ref=e129]: 03 / 4
+      - heading "你准备服务谁， 由谁来交付？" [level=1] [ref=e241]: 你准备服务谁，由谁来交付？
+      - paragraph [ref=e242]: 越聚焦的目标客户和项目组合，越容易形成第一批口碑与复购。
+      - generic [ref=e243]:
+        - generic [ref=e244]: 目标客群（用顿号分隔）
+        - textbox "目标客群（用顿号分隔）" [ref=e245]:
+          - /placeholder: 跑者、久坐白领、社区居民
+          - text: 久坐白领、社区居民
+      - generic [ref=e246]:
+        - generic [ref=e247]: 计划开展项目（用顿号分隔）
+        - textbox "计划开展项目（用顿号分隔）" [ref=e248]:
+          - /placeholder: 运动损伤、体态矫正、运动表现
+          - text: 运动损伤、体态矫正
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - generic [ref=e251]: 计划开业日期
+          - textbox "计划开业日期" [ref=e252]: 2026-12-01
+        - generic [ref=e253]:
+          - generic [ref=e254]: 现有团队
+          - textbox "现有团队" [ref=e255]:
+            - /placeholder: 例如：主理人1名、教练1名
+      - heading "投资准备度" [level=3] [ref=e256]
+      - generic [ref=e257]:
+        - generic [ref=e258]:
+          - generic [ref=e259]: 资金能力
+          - generic [ref=e260]: "60"
+        - slider [ref=e261]: "60"
+      - generic [ref=e262]:
+        - generic [ref=e263]:
+          - generic [ref=e264]: 行业资源
+          - generic [ref=e265]: "50"
+        - slider [ref=e266]: "50"
+      - generic [ref=e267]:
+        - generic [ref=e268]:
+          - generic [ref=e269]: 参与程度
+          - generic [ref=e270]: "70"
+        - slider [ref=e271]: "70"
+      - generic [ref=e272]:
+        - generic [ref=e273]:
+          - generic [ref=e274]: 回报预期合理度
+          - generic [ref=e275]: "60"
+        - slider [ref=e276]: "60"
+      - generic [ref=e277]:
+        - generic [ref=e278]:
+          - generic [ref=e279]: 风险承受能力
+          - generic [ref=e280]: "55"
+        - slider [ref=e281]: "55"
+      - generic [ref=e206]:
+        - button "上一步" [ref=e207] [cursor=pointer]
+        - button "保存并继续" [active] [ref=e208] [cursor=pointer]

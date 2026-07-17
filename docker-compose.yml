@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: opening
+      POSTGRES_PASSWORD: opening
+      POSTGRES_DB: opening
+    ports: ["5432:5432"]
+    volumes:
+      - opening_pg:/var/lib/postgresql/data
+      - ./apps/api/sql:/docker-entrypoint-initdb.d:ro
+volumes:
+  opening_pg:

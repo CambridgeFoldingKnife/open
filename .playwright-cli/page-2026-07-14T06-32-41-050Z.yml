@@ -1,0 +1,22 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - text: JIANHENG · OPENING INTELLIGENCE
+      - heading [level=1] [ref=e6]:
+        - text: 开馆之前，
+        - emphasis [ref=e7]: 先看清你的坐标。
+      - paragraph [ref=e8]: 不是再给你一份模板，而是把技术能力、商业资源、场地预算和设备组合，算成一条能落地的开馆路径。
+    - generic [ref=e9]:
+      - generic [ref=e14]: 专业能力
+      - generic [ref=e15]: 商业能力
+      - generic [ref=e17]: 你的门店坐标将在这里生成
+  - generic [ref=e18]:
+    - generic [ref=e19]: 01 / ACCOUNT
+    - heading "先建立你的开馆档案" [level=2] [ref=e20]
+    - paragraph [ref=e21]: 账号用于保存测算、隔离项目数据，并让顾问在报价后继续协助你。
+    - generic [ref=e22]:
+      - generic [ref=e23]: 手机号
+      - textbox "手机号" [ref=e24]:
+        - /placeholder: 11位手机号
+    - button "获取验证码" [disabled] [ref=e25]
+    - generic [ref=e26]: 本地演示验证码：246810

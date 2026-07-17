@@ -1,0 +1,63 @@
+- generic [ref=f2e3]:
+  - banner [ref=f2e4]:
+    - button "衡 开馆助手 REHAB OPENING FILE" [ref=f2e5] [cursor=pointer]:
+      - generic [ref=f2e6]: 衡
+      - generic [ref=f2e7]:
+        - generic [ref=f2e8]: 开馆助手
+        - generic [ref=f2e9]: REHAB OPENING FILE
+    - generic [ref=f2e10]: 基础测算 → 正式报价 → 推广增长
+    - generic [ref=f2e15]:
+      - generic [ref=f2e16]: 测
+      - generic [ref=f2e17]:
+        - generic [ref=f2e18]: 测试投资人
+        - generic [ref=f2e19]: 139****2222
+  - main [ref=f2e20]:
+    - generic [ref=f2e21]:
+      - generic [ref=f2e22]:
+        - generic [ref=f2e23]: OPENING FILE · 2026
+        - heading [level=1] [ref=f2e24]:
+          - text: 测试投资人，先把这家馆
+          - emphasis [ref=f2e25]: 算清楚，再开。
+        - paragraph [ref=f2e26]: 完成约 8 分钟的能力与场地评估，得到门店定位、三档设备报价、装修建议、证照清单与招聘计划。
+        - button "开始新的开馆测算 →" [ref=f2e27] [cursor=pointer]:
+          - text: 开始新的开馆测算
+          - generic [ref=f2e28]: →
+      - generic [ref=f2e29]:
+        - article [ref=f2e30]:
+          - generic [ref=f2e31]: 你的交付结果
+          - generic [ref=f2e32]: 1 个一级类型
+          - generic [ref=f2e33]: 2 个运营原型
+          - generic [ref=f2e34]: 3 档设备报价
+          - generic [ref=f2e35]: 数据全部独立保存
+        - article [ref=f2e36]
+        - article [ref=f2e37]
+    - generic [ref=f2e38]:
+      - generic [ref=f2e39]: 注册档案
+      - generic [ref=f2e40]: 能力诊断
+      - generic [ref=f2e41]: 门店定位
+      - generic [ref=f2e42]: 投资与报价
+      - generic [ref=f2e43]: 顾问跟进
+      - generic [ref=f2e44]: 推广增长
+    - generic [ref=f2e45]:
+      - generic [ref=f2e46]:
+        - generic [ref=f2e47]:
+          - text: MY OPENING FILES
+          - heading "我的开馆项目" [level=2] [ref=f2e48]
+        - button "＋ 新建项目" [ref=f2e49] [cursor=pointer]
+      - button "测算与报价 杭州 120㎡ 起步型门店 / 社区轻量店 专业 50 商业 50 预算 40万 查看完整档案 →" [ref=f2e51] [cursor=pointer]:
+        - text: 测算与报价
+        - generic [ref=f2e52]:
+          - text: 杭州
+          - generic [ref=f2e53]: 120㎡
+        - heading "起步型门店 / 社区轻量店" [level=3] [ref=f2e54]
+        - generic [ref=f2e55]:
+          - generic [ref=f2e56]:
+            - text: 专业
+            - generic [ref=f2e57]: "50"
+          - generic [ref=f2e58]:
+            - text: 商业
+            - generic [ref=f2e59]: "50"
+          - generic [ref=f2e60]:
+            - text: 预算
+            - generic [ref=f2e61]: 40万
+        - generic [ref=f2e62]: 查看完整档案 →

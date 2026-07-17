@@ -1,0 +1,65 @@
+- generic [ref=e52]:
+  - banner [ref=e53]:
+    - button "衡 开馆助手 REHAB OPENING FILE" [ref=e54] [cursor=pointer]:
+      - generic [ref=e55]: 衡
+      - generic [ref=e56]:
+        - generic [ref=e57]: 开馆助手
+        - generic [ref=e58]: REHAB OPENING FILE
+    - generic [ref=e59]: 基础测算 → 正式报价 → 推广增长
+    - generic [ref=e64]:
+      - generic [ref=e65]: 测
+      - generic [ref=e66]:
+        - generic [ref=e67]: 测试投资人
+        - generic [ref=e68]: 139****2222
+  - main [ref=e102]:
+    - complementary [ref=e103]:
+      - button "← 返回项目" [ref=e104] [cursor=pointer]
+      - text: OPENING ASSESSMENT
+      - heading "建立你的 开馆基础档案" [level=2] [ref=e105]: 建立你的开馆基础档案
+      - list [ref=e106]:
+        - listitem [ref=e107]:
+          - generic [ref=e108]: ✓
+          - generic [ref=e109]:
+            - generic [ref=e110]: 能力坐标
+            - generic [ref=e111]: 专业与商业能力
+        - listitem [ref=e112]:
+          - generic [ref=e113]: ✓
+          - generic [ref=e114]:
+            - generic [ref=e115]: 场地与投入
+            - generic [ref=e116]: 面积、租金与预算
+        - listitem [ref=e117]:
+          - generic [ref=e118]: ✓
+          - generic [ref=e119]:
+            - generic [ref=e120]: 客群与团队
+            - generic [ref=e121]: 服务对象与开馆时间
+        - listitem [ref=e122]:
+          - generic [ref=e123]: "4"
+          - generic [ref=e124]:
+            - generic [ref=e125]: 确认提交
+            - generic [ref=e126]: 生成定位与报价
+      - paragraph [ref=e127]: 你的回答只用于本次开馆测算和已授权的顾问跟进。
+    - generic [ref=e128]:
+      - generic [ref=e129]: 04 / 4
+      - heading "资料已齐，准备生成 第一阶段开馆档案。" [level=1] [ref=e282]: 资料已齐，准备生成第一阶段开馆档案。
+      - paragraph [ref=e283]: 系统会先计算专业与商业坐标，再匹配运营原型、装修建议、人员、证照与三档设备报价。
+      - generic [ref=e284]:
+        - article [ref=e285]:
+          - generic [ref=e286]: 场地
+          - generic [ref=e287]: 杭州 · 120㎡
+          - generic [ref=e288]: 月租 ¥18,000
+        - article [ref=e289]:
+          - generic [ref=e290]: 计划投入
+          - generic [ref=e291]: ¥400,000
+          - generic [ref=e292]: 预计 2 张床位
+        - article [ref=e293]:
+          - generic [ref=e294]: 目标客群
+          - generic [ref=e295]: 久坐白领、社区居民
+          - generic [ref=e296]: 运动损伤、体态矫正
+        - article [ref=e297]:
+          - generic [ref=e298]: 交付结果
+          - generic [ref=e299]: 定位＋报价＋开馆准备
+          - generic [ref=e300]: 销售顾问将在授权范围内跟进
+      - generic [ref=e301]: 报价仅使用已经审核到具体规格的标准价格；价格冲突或缺失的产品会显示“需要询价”，不会由AI猜测。
+      - generic [ref=e206]:
+        - button "上一步" [ref=e207] [cursor=pointer]
+        - button "生成定位与报价" [active] [ref=e302] [cursor=pointer]

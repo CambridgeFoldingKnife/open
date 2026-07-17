@@ -1,0 +1,4 @@
+const base=import.meta.env.VITE_API_URL||'';
+const testMode=import.meta.env.DEV||import.meta.env.VITE_TEST_MODE==='true';
+export async function api<T>(path:string,options:RequestInit={}):Promise<T>{const token=localStorage.getItem('opening-token');const isPreview=testMode&&token==='dev-preview';const res=await fetch(`${base}/api${path}`,{...options,headers:{'content-type':'application/json',...(token&&!isPreview?{authorization:`Bearer ${token}`}:{'x-role':'customer','x-user-id':'customer-1'}),...(options.headers||{})}});if(!res.ok){const e=await res.json().catch(()=>({message:'请求失败'}));throw new Error(Array.isArray(e.message)?e.message.join('；'):e.message||'请求失败')}return res.json()}
+export const post=<T>(path:string,body?:unknown)=>api<T>(path,{method:'POST',body:body===undefined?undefined:JSON.stringify(body)});

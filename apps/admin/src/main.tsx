@@ -1,0 +1,2 @@
+import React from 'react';import{createRoot}from'react-dom/client';import{ConfigProvider}from'antd';import zhCN from'antd/locale/zh_CN';import App from'./App';import'./styles.css';
+createRoot(document.getElementById('root')!).render(<React.StrictMode><ConfigProvider locale={zhCN} theme={{token:{colorPrimary:'#9b7a55',colorText:'#1b2638',borderRadius:4,fontFamily:'"Noto Sans SC","PingFang SC",sans-serif'},components:{Button:{primaryShadow:'none'},Table:{headerBg:'#f4f3f0'}}}}><App/></ConfigProvider></React.StrictMode>);

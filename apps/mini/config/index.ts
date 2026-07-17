@@ -1,0 +1,1 @@
+import{defineConfig}from'@tarojs/cli';export default defineConfig({projectName:'opening-assistant',date:'2026-7-13',designWidth:750,deviceRatio:{750:1},sourceRoot:'src',outputRoot:'dist',framework:'react',compiler:{type:'webpack5',prebundle:{enable:false}},mini:{postcss:{pxtransform:{enable:true},url:{enable:true,config:{limit:1024}},cssModules:{enable:false}}}});

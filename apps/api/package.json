@@ -1,0 +1,31 @@
+{
+  "name": "@opening/api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.11",
+    "@nestjs/core": "^11.0.11",
+    "@nestjs/platform-express": "^11.0.11",
+    "@opening/shared": "*",
+    "exceljs": "^4.4.0",
+    "nodemailer": "^9.0.3",
+    "pg": "^8.13.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.5",
+    "@nestjs/testing": "^11.0.11",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "@types/pg": "^8.11.11",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

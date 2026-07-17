@@ -1,0 +1,80 @@
+- generic [ref=e52]:
+  - banner [ref=e53]:
+    - button "衡 开馆助手 REHAB OPENING FILE" [ref=e54] [cursor=pointer]:
+      - generic [ref=e55]: 衡
+      - generic [ref=e56]:
+        - generic [ref=e57]: 开馆助手
+        - generic [ref=e58]: REHAB OPENING FILE
+    - generic [ref=e59]: 基础测算 → 正式报价 → 推广增长
+    - generic [ref=e64]:
+      - generic [ref=e65]: 测
+      - generic [ref=e66]:
+        - generic [ref=e67]: 测试投资人
+        - generic [ref=e68]: 139****2222
+  - main [ref=e102]:
+    - complementary [ref=e103]:
+      - button "← 返回项目" [ref=e104] [cursor=pointer]
+      - text: OPENING ASSESSMENT
+      - heading "建立你的 开馆基础档案" [level=2] [ref=e105]: 建立你的开馆基础档案
+      - list [ref=e106]:
+        - listitem [ref=e107]:
+          - generic [ref=e108]: ✓
+          - generic [ref=e109]:
+            - generic [ref=e110]: 能力坐标
+            - generic [ref=e111]: 专业与商业能力
+        - listitem [ref=e112]:
+          - generic [ref=e113]: "2"
+          - generic [ref=e114]:
+            - generic [ref=e115]: 场地与投入
+            - generic [ref=e116]: 面积、租金与预算
+        - listitem [ref=e117]:
+          - generic [ref=e118]: "3"
+          - generic [ref=e119]:
+            - generic [ref=e120]: 客群与团队
+            - generic [ref=e121]: 服务对象与开馆时间
+        - listitem [ref=e122]:
+          - generic [ref=e123]: "4"
+          - generic [ref=e124]:
+            - generic [ref=e125]: 确认提交
+            - generic [ref=e126]: 生成定位与报价
+      - paragraph [ref=e127]: 你的回答只用于本次开馆测算和已授权的顾问跟进。
+    - generic [ref=e128]:
+      - generic [ref=e129]: 02 / 4
+      - heading "把场地和投入条件， 变成可计算的信息。" [level=1] [ref=e209]: 把场地和投入条件，变成可计算的信息。
+      - paragraph [ref=e210]: 没有正式户型图也能完成测算；后续上传后，顾问可据此调整装修文字建议。
+      - generic [ref=e211]:
+        - generic [ref=e212]:
+          - generic [ref=e213]: 城市
+          - textbox "城市" [ref=e214]:
+            - /placeholder: 例如：杭州
+        - generic [ref=e215]:
+          - generic [ref=e216]: 详细地址 / 商圈
+          - textbox "详细地址 / 商圈" [ref=e217]:
+            - /placeholder: 商圈或意向地址
+      - generic [ref=e218]:
+        - generic [ref=e219]:
+          - generic [ref=e220]: 使用面积（㎡）
+          - spinbutton "使用面积（㎡）" [ref=e221]: "120"
+        - generic [ref=e222]:
+          - generic [ref=e223]: 月租金（元）
+          - spinbutton "月租金（元）" [ref=e224]: "18000"
+        - generic [ref=e225]:
+          - generic [ref=e226]: 层高（米）
+          - spinbutton "层高（米）" [ref=e227]: "3.2"
+      - generic [ref=e228]:
+        - generic [ref=e229]:
+          - generic [ref=e230]: 计划投资（元）
+          - spinbutton "计划投资（元）" [ref=e231]: "400000"
+        - generic [ref=e232]:
+          - generic [ref=e233]: 预计床位
+          - spinbutton "预计床位" [ref=e234]: "2"
+      - generic [ref=e235]:
+        - generic [ref=e236]: 户型条件
+        - textbox "户型条件" [ref=e237]:
+          - /placeholder: 例如：临街一层，左侧有两根承重柱，后区已有上下水。也可记录户型图文件名。
+      - generic [ref=e238] [cursor=pointer]:
+        - generic [ref=e239]: 上传户型图（PDF或图片）
+        - generic [ref=e240]: 当前版本记录文件信息并交由顾问复核
+      - generic [ref=e206]:
+        - button "上一步" [ref=e207] [cursor=pointer]
+        - button "保存并继续" [active] [ref=e208] [cursor=pointer]

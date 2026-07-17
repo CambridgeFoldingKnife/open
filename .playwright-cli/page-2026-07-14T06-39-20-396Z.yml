@@ -1,0 +1,98 @@
+- generic [ref=f2e4]:
+  - complementary [ref=f2e5]:
+    - generic [ref=f2e6]:
+      - generic [ref=f2e7]:
+        - generic [ref=f2e8]: 衡
+        - generic [ref=f2e9]:
+          - generic [ref=f2e10]: 开馆助手
+          - generic [ref=f2e11]: REHAB OPENING OS
+      - menu [ref=f2e12]:
+        - menuitem [ref=f2e13] [cursor=pointer]:
+          - img "home" [ref=f2e14]
+          - text: 开馆项目
+        - menuitem [ref=f2e17] [cursor=pointer]:
+          - img "team" [ref=f2e18]
+          - text: 销售线索
+        - menuitem [ref=f2e21] [cursor=pointer]:
+          - img "product" [ref=f2e22]
+          - text: 产品与价格
+        - menuitem [ref=f2e25] [cursor=pointer]:
+          - img "setting" [ref=f2e26]
+          - text: 运营原型
+        - menuitem [ref=f2e29] [cursor=pointer]:
+          - img "audit" [ref=f2e30]
+          - text: 审核记录
+      - generic [ref=f2e33]:
+        - text: 当前工作空间
+        - generic [ref=f2e34]: 健衡开馆服务中心
+  - generic [ref=f2e35]:
+    - banner [ref=f2e36]:
+      - generic [ref=f2e37]:
+        - text: 报价、审核与成交跟进
+        - heading "开馆服务工作台" [level=4] [ref=f2e38]
+      - generic [ref=f2e39]:
+        - generic [ref=f2e43] [cursor=pointer]:
+          - combobox [ref=f2e45]
+          - generic "管理员视角" [ref=f2e46]
+        - generic [ref=f2e47]: 管
+    - main [ref=f2e50]:
+      - generic [ref=f2e51]:
+        - generic [ref=f2e52]:
+          - text: OPENING PIPELINE
+          - heading [level=1] [ref=f2e53]:
+            - text: 从门店定位，
+            - emphasis [ref=f2e54]: 走到正式成交。
+          - text: 四象限诊断、运营原型、装修建议和设备报价共享同一份客户档案。
+        - generic [ref=f2e55]:
+          - generic [ref=f2e56]: 注册
+          - generic [ref=f2e59]: 测算
+          - generic [ref=f2e62]: 报价
+          - generic [ref=f2e65]: 成交
+      - generic [ref=f2e68]:
+        - generic [ref=f2e72]:
+          - generic [ref=f2e73]: 进行中项目
+          - generic [ref=f2e74]:
+            - generic [ref=f2e75]: "0"
+            - generic [ref=f2e76]: 个
+        - generic [ref=f2e80]:
+          - generic [ref=f2e81]: 等待审核
+          - generic [ref=f2e82]:
+            - generic [ref=f2e83]: "0"
+            - generic [ref=f2e84]: 个
+        - generic [ref=f2e88]:
+          - generic [ref=f2e89]: 待分配线索
+          - generic [ref=f2e90]:
+            - generic [ref=f2e91]: "0"
+            - generic [ref=f2e92]: 条
+        - generic [ref=f2e96]:
+          - generic [ref=f2e97]: 销售管道
+          - generic [ref=f2e98]:
+            - generic [ref=f2e99]: "0.0"
+            - generic [ref=f2e100]: 万元
+      - generic [ref=f2e101]:
+        - generic [ref=f2e103]:
+          - generic [ref=f2e104]: 开馆项目
+          - generic [ref=f2e106]:
+            - img "search" [ref=f2e108]
+            - textbox "搜索客户、城市、定位" [ref=f2e111]
+        - generic [ref=f2e115]:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - table:
+                    - rowgroup:
+                      - row "客户 / 项目 能力坐标 规模 标准版报价 当前阶段 更新日期":
+                        - columnheader "客户 / 项目"
+                        - columnheader "能力坐标"
+                        - columnheader "规模"
+                        - columnheader "标准版报价"
+                        - columnheader "当前阶段"
+                        - columnheader "更新日期"
+                    - rowgroup:
+                      - row "暂无数据 暂无数据":
+                        - cell "暂无数据 暂无数据":
+                          - generic:
+                            - generic:
+                              - img "暂无数据"
+                            - generic: 暂无数据
