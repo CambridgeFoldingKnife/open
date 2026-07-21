@@ -11,11 +11,19 @@ export class MailService {
       host: process.env.SMTP_HOST || 'smtpdm.aliyun.com',
       port: Number(process.env.SMTP_PORT) || 465,
       secure: true,
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
     });
+    if (process.env.SMTP_USER) {
+      this.transporter.verify().catch((err) => {
+        this.logger.warn(`SMTP 连接预热失败: ${err.message}`);
+      });
+    }
   }
 
   async sendVerificationCode(email: string, code: string): Promise<boolean> {
@@ -53,7 +61,7 @@ export class MailService {
       });
       this.logger.log(`验证码邮件已发送至 ${email}`);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`邮件发送失败: ${error.message}`);
       throw error;
     }

@@ -1,5 +1,6 @@
-import type { CatalogItem, Lead, OpeningProject, UserAccount, VenueType } from '@opening/shared';
+import type { CatalogItem, Lead, OpeningProject, StaffAccount, UserAccount, VenueType } from '@opening/shared';
 import { capabilityScore, emptyCapability, readinessScore } from '@opening/shared';
+import { hashPassword } from './auth';
 
 export const venues: VenueType[] = [
   { id:'prototype-community',name:'社区轻量店',description:'80-150㎡，社区信任与近距离复购',active:true },
@@ -33,7 +34,7 @@ export const catalog: CatalogItem[] = [
   {id:'marketing-30',kind:'marketing',name:'开馆前30天内容预热',category:'第二阶段推广',venueTypeIds:[],prototypeIds:['community','commercial','medical'],minArea:0,minBudget:0,budgetTier:'starter',serviceTags:[],audienceTags:[],required:true,description:'仅在基础方案确认后开放',active:true}
 ];
 
-export const demoUser:UserAccount={id:'customer-1',phone:'13800002468',email:'lin@example.com',name:'林女士',city:'杭州',identity:'investor',preferredContact:'wechat',contactWindow:'工作日 14:00-18:00',marketingConsent:true,consentAt:new Date().toISOString(),organizationId:'org-customer-1',createdAt:new Date().toISOString()};
+export const demoUser:UserAccount={id:'customer-1',phone:'13800002468',email:'lin@example.com',name:'林女士',city:'杭州',identity:'investor',stage:'exploring',preferredContact:'wechat',contactWindow:'工作日 14:00-18:00',marketingConsent:true,consentAt:new Date().toISOString(),organizationId:'org-customer-1',createdAt:new Date().toISOString()};
 const readiness={capital:82,resources:70,involvement:88,returnExpectation:64,riskTolerance:76};
 const capability={...emptyCapability(),professionalBackground:72,assessmentIntervention:76,riskRecognition:70,cases:68,teachingTeam:62,customerResources:66,contentAcquisition:58,salesConversion:54,management:56,fundingTeam:72};
 export const demoProject:OpeningProject={
@@ -41,6 +42,12 @@ export const demoProject:OpeningProject={
   audiences:['跑者','久坐白领'],plannedServices:['运动损伤','体态矫正','运动表现'],openingDate:'2026-10-01',teamFoundation:'已有1名主理人及1名健身教练',
   readiness,readinessScore:readinessScore(readiness),capability,capabilityResult:capabilityScore(capability),quadrant:'expert',prototype:{primary:'community',alternative:'commercial',primaryReason:'',alternativeReason:'',rejectedReasons:[]},
   venue:{address:'杭州市滨江区',area:180,rentMonthly:26000,ceilingHeight:3.4,beds:3},renovation:{keywords:[],positioning:'',zoneRatios:[],circulation:[],essentials:[],recommended:[],deferred:[],risks:[]},licenses:[],staffing:[],quoteSummaries:[],
-  status:'review',consultantId:'consultant-1',assignedSalesId:'sales-1',interviewNotes:'客户重视专业口碑，建议先聚焦跑者与久坐白领。',recommendations:[],version:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
+  status:'review',consultantId:'staff-consultant',interviewNotes:'客户重视专业口碑，建议先聚焦跑者与久坐白领。',recommendations:[],version:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
 };
-export const demoLead:Lead={id:'lead-demo',userId:'customer-1',projectId:'project-demo',name:'林女士',phone:'13800002468',email:'lin@example.com',city:'杭州',identity:'investor',budget:800000,area:180,openingDate:'2026-10-01',quadrant:'expert',prototype:'commercial',quoteAmount:0,marketingConsent:true,status:'qualified',assignedSalesId:'sales-1',nextFollowUpAt:'2026-07-16T06:00:00.000Z',expectedAmount:42000,probability:65,lastNote:'客户等待装修建议与设备标准版报价。',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+export const demoLead:Lead={id:'lead-demo',userId:'customer-1',projectId:'project-demo',name:'林女士',phone:'13800002468',email:'lin@example.com',city:'杭州',identity:'investor',budget:800000,area:180,openingDate:'2026-10-01',quadrant:'expert',prototype:'commercial',quoteAmount:0,marketingConsent:true,status:'qualified',assignedConsultantId:'staff-consultant',nextFollowUpAt:'2026-07-16T06:00:00.000Z',expectedAmount:42000,probability:65,lastNote:'客户等待装修建议与设备标准版报价。',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+
+const defaultHash=hashPassword('123456');
+export const demoStaff:StaffAccount[]=[
+  {id:'staff-admin',email:'admin@jianheng.com',passwordHash:defaultHash,name:'管理员',role:'admin',title:'系统管理员',phone:'13800000001',active:true,createdAt:new Date().toISOString()},
+  {id:'staff-consultant',email:'consultant@jianheng.com',passwordHash:defaultHash,name:'李顾问',role:'consultant',title:'高级顾问',phone:'13800000002',active:true,createdAt:new Date().toISOString()}
+];

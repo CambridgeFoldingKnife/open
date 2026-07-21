@@ -1,6 +1,25 @@
-import type{Role}from'@opening/shared';
-const base=import.meta.env.VITE_API_URL||'';let role:Role=(localStorage.getItem('role')as Role)||'admin';
-export const setRole=(r:Role)=>{role=r;localStorage.setItem('role',r)};
-const actorId=()=>role==='consultant'?'consultant-1':role==='sales'?'sales-1':'admin-1';
-export async function api<T>(path:string,options:RequestInit={}):Promise<T>{const res=await fetch(`${base}/api${path}`,{...options,headers:{'content-type':'application/json','x-role':role,'x-user-id':actorId(),...(options.headers||{})}});if(!res.ok){const e=await res.json().catch(()=>({message:'请求失败'}));throw new Error(e.message||'请求失败')}return res.json()}
-export async function downloadExcel(id:string){const res=await fetch(`${base}/api/projects/${id}/export`,{headers:{'x-role':role,'x-user-id':actorId()}});if(!res.ok)throw new Error('下载失败');const blob=await res.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`开馆方案-${id}.xlsx`;a.click();URL.revokeObjectURL(url)}
+const base=import.meta.env.VITE_API_URL||'';
+let token:string=localStorage.getItem('staff_token')||'';
+export const setToken=(t:string)=>{token=t;localStorage.setItem('staff_token',t)};
+export const getToken=()=>token;
+export const clearToken=()=>{token='';localStorage.removeItem('staff_token');localStorage.removeItem('staff_info')};
+
+function authHeaders():Record<string,string>{return token?{'Authorization':'Bearer '+token}:{};}
+
+export async function api(path:string,options:RequestInit={}):Promise<any>{
+  const res=await fetch(base+'/api'+path,{
+    ...options,
+    headers:{'content-type':'application/json',...authHeaders(),...(options.headers||{})}
+  });
+  if(!res.ok){const e=await res.json().catch(()=>({message:'请求失败'}));throw new Error(e.message||'请求失败');}
+  return res.json();
+}
+
+export async function downloadExcel(id:string){
+  const res=await fetch(base+'/api/projects/'+id+'/export',{headers:authHeaders()});
+  if(!res.ok)throw new Error('下载失败');
+  const blob=await res.blob();
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='开馆方案-'+id+'.xlsx';a.click();
+  URL.revokeObjectURL(url);
+}

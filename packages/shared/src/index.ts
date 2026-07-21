@@ -1,4 +1,4 @@
-export type Role = 'customer' | 'sales' | 'consultant' | 'admin';
+export type Role = 'customer' | 'consultant' | 'admin';
 export type ProjectStatus = 'draft' | 'submitted' | 'assigned' | 'planning' | 'review' | 'published' | 'foundation_confirmed' | 'growth_active';
 export const statusLabels: Record<ProjectStatus, string> = {
   draft: '草稿', submitted: '已完成测算', assigned: '已分配', planning: '方案编制中', review: '待审核',
@@ -20,7 +20,10 @@ export const prototypeMeta: Record<OperatingPrototype, { name: string; area: str
 };
 
 export interface UserAccount {
-  id: string; phone: string; email: string; name: string; city: string; identity: 'investor' | 'therapist' | 'operator';
+  id: string; phone: string; email: string; name: string; city: string;
+  identity: 'investor' | 'therapist' | 'partner' | 'other';
+  stage: 'exploring' | 'site_selected' | 'opening_soon';
+  passwordHash?: string; emailVerified?: boolean;
   preferredContact: 'phone' | 'wechat' | 'email'; contactWindow: string; marketingConsent: boolean; consentAt?: string;
   organizationId: string; createdAt: string;
 }
@@ -36,7 +39,7 @@ export interface CapabilityResult {
 export interface ReadinessAnswers { capital: number; resources: number; involvement: number; returnExpectation: number; riskTolerance: number; }
 export interface VenueProfile {
   address: string; area: number; rentMonthly: number; ceilingHeight: number; beds: number; length?: number; width?: number;
-  rentMode?: 'leased' | 'owned' | 'undecided'; imputedRentMonthly?: number; layoutNotes?: string; floorPlanName?: string;
+  rentMode?: 'leased' | 'owned' | 'undecided'; imputedRentMonthly?: number; layoutNotes?: string;
 }
 export interface PrototypeRecommendation { primary: OperatingPrototype; alternative: OperatingPrototype; primaryReason: string; alternativeReason: string; rejectedReasons: string[]; }
 export interface RenovationRecommendation {
@@ -68,7 +71,7 @@ export interface OpeningProject {
   capabilityResult: CapabilityResult; quadrant: StoreQuadrant; prototype: PrototypeRecommendation; venue: VenueProfile;
   renovation: RenovationRecommendation; licenses: LicenseTask[]; staffing: StaffingRole[]; quoteSummaries: QuoteSummary[];
   servicePortfolio?: ServiceOffering[]; breakEven?: BreakEvenEstimate; openingTasks?: OpeningTask[];
-  status: ProjectStatus; consultantId?: string; assignedSalesId?: string; interviewNotes?: string; recommendations: Recommendation[];
+  status: ProjectStatus; consultantId?: string; interviewNotes?: string; recommendations: Recommendation[];
   version: number; createdAt: string; updatedAt: string; publishedAt?: string;
 }
 export interface CatalogItem {
@@ -84,10 +87,11 @@ export const leadStatusLabels: Record<LeadStatus, string> = { registered:'新注
 export interface Lead {
   id: string; userId: string; projectId?: string; name: string; phone: string; email: string; city: string; identity: UserAccount['identity'];
   budget: number; area: number; openingDate?: string; quadrant?: StoreQuadrant; prototype?: OperatingPrototype; quoteAmount?: number;
-  marketingConsent: boolean; status: LeadStatus; assignedSalesId?: string; nextFollowUpAt?: string; expectedAmount?: number;
+  marketingConsent: boolean; status: LeadStatus; assignedConsultantId?: string; nextFollowUpAt?: string; expectedAmount?: number;
   probability?: number; lastNote?: string; lostReason?: string; createdAt: string; updatedAt: string;
 }
-export interface SalesFollowUp { id: string; leadId: string; salesId: string; channel: 'phone' | 'wechat' | 'email' | 'meeting'; note: string; nextAt?: string; at: string; }
+export interface FollowUp { id: string; leadId: string; consultantId: string; channel: 'phone' | 'wechat' | 'email' | 'meeting'; note: string; nextAt?: string; at: string; }
+export interface StaffAccount { id: string; email: string; passwordHash: string; name: string; role: Role; title: string; phone: string; active: boolean; createdAt: string; }
 export interface AuditEvent { id: string; projectId: string; actorId: string; actorRole: Role; action: string; detail: string; at: string; }
 
 export const emptyCapability = (): CapabilityAnswers => ({ professionalBackground:50,assessmentIntervention:50,riskRecognition:50,cases:50,teachingTeam:50,customerResources:50,contentAcquisition:50,salesConversion:50,management:50,fundingTeam:50 });

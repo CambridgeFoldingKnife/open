@@ -21,10 +21,10 @@ CREATE TABLE IF NOT EXISTS user_accounts (
 );
 CREATE TABLE IF NOT EXISTS leads (
   id text PRIMARY KEY, user_id text NOT NULL, project_id text, payload jsonb NOT NULL, status text NOT NULL,
-  assigned_sales_id text, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now()
+  assigned_consultant_id text, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_projects_customer ON projects(customer_id);
 CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);
 CREATE INDEX IF NOT EXISTS idx_audit_project ON audit_events(project_id);
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
-CREATE INDEX IF NOT EXISTS idx_leads_sales ON leads(assigned_sales_id);
+CREATE INDEX IF NOT EXISTS idx_leads_consultant ON leads(assigned_consultant_id);

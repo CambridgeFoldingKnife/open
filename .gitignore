@@ -6,3 +6,5 @@ apps/mini/dist
 coverage
 *.log
 .vercel
+*.tsbuildinfo
+opencode.json
