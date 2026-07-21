@@ -1,8 +1,25 @@
 export type Role = 'customer' | 'consultant' | 'admin';
-export type ProjectStatus = 'draft' | 'submitted' | 'assigned' | 'planning' | 'review' | 'published' | 'foundation_confirmed' | 'growth_active';
+export type ProjectStatus = 'pending' | 'processing' | 'completed';
 export const statusLabels: Record<ProjectStatus, string> = {
-  draft: '草稿', submitted: '已完成测算', assigned: '已分配', planning: '方案编制中', review: '待审核',
-  published: '报价已发布', foundation_confirmed: '基础方案已确认', growth_active: '推广助手已开放'
+  pending: '待处理', processing: '处理中', completed: '已完成'
+};
+
+/** 将旧版状态归一化为新版 3 态（数据迁移完成前兼容） */
+export const normalizeProjectStatus = (status: string): ProjectStatus => {
+  switch (status) {
+    case 'draft':
+    case 'submitted':
+      return 'pending';
+    case 'assigned':
+    case 'planning':
+    case 'published':
+      return 'processing';
+    case 'foundation_confirmed':
+    case 'growth_active':
+      return 'completed';
+    default:
+      return status as ProjectStatus;
+  }
 };
 
 export type StoreQuadrant = 'starter' | 'growth' | 'expert' | 'system';
@@ -25,7 +42,7 @@ export interface UserAccount {
   stage: 'exploring' | 'site_selected' | 'opening_soon';
   passwordHash?: string; emailVerified?: boolean;
   preferredContact: 'phone' | 'wechat' | 'email'; contactWindow: string; marketingConsent: boolean; consentAt?: string;
-  organizationId: string; createdAt: string;
+  organizationId: string; referredByConsultantId?: string; createdAt: string;
 }
 export interface ConsentRecord { id: string; userId: string; type: 'terms' | 'privacy' | 'marketing'; granted: boolean; at: string; }
 export interface CapabilityAnswers {
@@ -72,7 +89,7 @@ export interface OpeningProject {
   renovation: RenovationRecommendation; licenses: LicenseTask[]; staffing: StaffingRole[]; quoteSummaries: QuoteSummary[];
   servicePortfolio?: ServiceOffering[]; breakEven?: BreakEvenEstimate; openingTasks?: OpeningTask[];
   status: ProjectStatus; consultantId?: string; interviewNotes?: string; recommendations: Recommendation[];
-  version: number; createdAt: string; updatedAt: string; publishedAt?: string;
+  version: number; deletedAt?: string; createdAt: string; updatedAt: string; publishedAt?: string;
 }
 export interface CatalogItem {
   id: string; kind: Recommendation['kind']; name: string; category: string; venueTypeIds: string[]; prototypeIds?: OperatingPrototype[];
@@ -91,7 +108,7 @@ export interface Lead {
   probability?: number; lastNote?: string; lostReason?: string; createdAt: string; updatedAt: string;
 }
 export interface FollowUp { id: string; leadId: string; consultantId: string; channel: 'phone' | 'wechat' | 'email' | 'meeting'; note: string; nextAt?: string; at: string; }
-export interface StaffAccount { id: string; email: string; passwordHash: string; name: string; role: Role; title: string; phone: string; active: boolean; createdAt: string; }
+export interface StaffAccount { id: string; email: string; passwordHash: string; name: string; role: Role; title: string; phone: string; referralCode?: string; active: boolean; createdAt: string; }
 export interface AuditEvent { id: string; projectId: string; actorId: string; actorRole: Role; action: string; detail: string; at: string; }
 
 export const emptyCapability = (): CapabilityAnswers => ({ professionalBackground:50,assessmentIntervention:50,riskRecognition:50,cases:50,teachingTeam:50,customerResources:50,contentAcquisition:50,salesConversion:50,management:50,fundingTeam:50 });

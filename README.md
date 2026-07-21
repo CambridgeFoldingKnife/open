@@ -1,6 +1,6 @@
 # 运动康复馆开馆助手
 
-面向运动康复与精品训练场馆的微信开馆方案生成器，包含客户小程序、顾问管理后台、规则引擎、审核发布和 Excel 交付。
+面向运动康复与精品训练场馆的微信开馆方案生成器，包含客户小程序、顾问管理后台、规则引擎和 Excel 交付。
 
 ## 快速启动
 
@@ -103,7 +103,7 @@ npm run dev
 
 **3. 初始化测试数据**
 
-数据库为空时，可手动注入测试账号和演示项目：
+数据库为空时，可手动注入测试账号和演示项目/线索数据：
 
 ```bash
 npm run seed -w @opening/api
@@ -111,15 +111,26 @@ npm run seed -w @opening/api
 
 执行后会创建管理员、顾问账号和一条演示项目/线索数据。本地短信验证码固定为 `246810`。
 
-### 角色变更迁移
+**4. 数据库迁移脚本**
 
-若从旧版本升级，`sales` 角色已与 `consultant` 合并。管理员在完成代码更新后，需在 PostgreSQL 中执行迁移脚本：
+迁移脚本位于 `apps/api/sql/`，升级时请按顺序执行：
+
+| 脚本 | 说明 |
+|---|---|
+| `003_staff_accounts.sql` | 员工账号表初始化 |
+| `004_unify_sales_consultant.sql` | `sales` 角色合并为 `consultant` |
+| `005_add_referral.sql` | 为员工生成唯一 `referral_code` |
+| `006_simplify_project_status.sql` | 项目状态简化为 3 态 |
+
+推荐使用项目内置的迁移工具执行：
 
 ```bash
-psql "$DATABASE_URL" -f apps/api/sql/004_unify_sales_consultant.sql
+npx tsx apps/api/src/run-migration.ts apps/api/sql/004_unify_sales_consultant.sql
+npx tsx apps/api/src/run-migration.ts apps/api/sql/005_add_referral.sql
+npx tsx apps/api/src/run-migration.ts apps/api/sql/006_simplify_project_status.sql
 ```
 
-或在 Supabase SQL Editor 中直接执行 `apps/api/sql/004_unify_sales_consultant.sql` 的内容。
+或在 Supabase SQL Editor 中直接执行对应 SQL 文件内容。
 
 ## 登录与权限
 
@@ -141,19 +152,42 @@ psql "$DATABASE_URL" -f apps/api/sql/004_unify_sales_consultant.sql
 | 功能 | admin | consultant |
 |---|:---:|:---:|
 | 查看全部项目 | ✅ | ❌ 仅自己 |
-| 分配顾问 | ✅ | - |
 | 编辑方案 | ✅ | ✅ |
-| 审核发布 | ✅ | - |
+| 修改项目状态 | ✅ | ✅ |
 | 查看全部线索 | ✅ | ❌ 仅自己 |
-| 分配线索 | ✅ | - |
 | 添加跟进 | ✅ | ✅ |
 | 管理产品价格 | ✅ | 只读 |
 | 管理运营原型 | ✅ | ❌ |
 | 下载 Excel | ✅ | ✅ |
+| 复制邀请链接 | ✅ | ✅ |
 
 ### 用户端（Web）
 
 用户端支持邮箱注册/登录，本地短信验证码固定为 `246810`。
+
+### 顾问邀请与客户归属
+
+顾问可在管理后台顶部复制专属邀请链接，格式为：
+
+```
+https://<域名>/?ref=<顾问推荐码>
+```
+
+用户通过该链接进入注册页并注册后，`user_accounts.referred_by_consultant_id` 会自动记录归属顾问。后续该用户首次创建项目时，项目会自动分配给对应顾问跟进。
+
+> 老顾问需要在执行 `005_add_referral.sql` 迁移后才会显示邀请链接。
+
+## 项目状态
+
+项目生命周期已简化为 3 种状态：
+
+| 状态 | 含义 | 操作 |
+|---|---|---|
+| `pending` / 待处理 | 用户已提交，等待顾问处理 | 顾问点击「开始跟进」 |
+| `processing` / 处理中 | 顾问正在联系用户 | 顾问点击「标记已完成」 |
+| `completed` / 已完成 | 双方已联系并成交 | 不可再修改 |
+
+用户端删除的项目不会出现在销售端列表中。
 
 ## 微信小程序
 
@@ -193,17 +227,43 @@ npm run typecheck
 | email | text | 登录邮箱（唯一） |
 | password_hash | text | 密码哈希（scrypt） |
 | name | text | 姓名 |
-| role | text | 角色：admin/consultant |
-
+| role | text | 角色：admin / consultant |
 | title | text | 职位 |
 | phone | text | 手机号 |
+| referral_code | text | 唯一推荐码，用于邀请客户 |
 | active | boolean | 是否启用 |
 | created_at | timestamptz | 创建时间 |
+
+### user_accounts（用户账号）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | text | 主键 |
+| phone | text | 手机号 |
+| email | text | 邮箱 |
+| name | text | 姓名 |
+| city | text | 城市 |
+| identity | text | 身份：investor / therapist / partner / other |
+| stage | text | 创业阶段 |
+| referred_by_consultant_id | text | 归属顾问 ID（通过邀请链接注册） |
+| created_at | timestamptz | 创建时间 |
+
+### projects（开馆项目）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | text | 主键 |
+| customer_id | text | 关联用户 |
+| consultant_id | text | 归属顾问 |
+| status | text | 项目状态：pending / processing / completed |
+| deleted_at | timestamptz | 用户删除时间，非空则不显示在销售端 |
 
 SQL 文件位于 `apps/api/sql/` 目录：
 
 - `003_staff_accounts.sql`：员工账号表初始化
 - `004_unify_sales_consultant.sql`：销售与顾问角色合并迁移
+- `005_add_referral.sql`：生成顾问推荐码
+- `006_simplify_project_status.sql`：项目状态简化为 3 态
 
 ## 项目结构
 
@@ -215,10 +275,18 @@ SQL 文件位于 `apps/api/sql/` 目录：
 │   │   ├── src/
 │   │   │   ├── auth.ts     # JWT 认证与密码哈希
 │   │   │   ├── store.service.ts  # 核心业务逻辑
-│   │   │   └── app.controller.ts # API 路由
+│   │   │   ├── app.controller.ts # API 路由
+│   │   │   └── run-migration.ts  # 迁移脚本执行工具
 │   │   └── sql/            # 数据库迁移文件
 │   ├── web/                # 客户端
 │   ├── admin/              # 管理后台
+│   │   ├── src/
+│   │   │   ├── App.tsx
+│   │   │   ├── utils/status.ts   # 状态标签与颜色
+│   │   │   └── components/
+│   │   │       ├── UserProjectsPage.tsx
+│   │   │       └── ProjectDetailPage.tsx
+│   │   └── dist/           # 构建产物
 │   └── mini/               # 微信小程序
 ├── docker-compose.yml      # PostgreSQL 容器配置
 └── package.json            # 根配置

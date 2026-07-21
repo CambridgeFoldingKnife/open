@@ -6,7 +6,7 @@ import { RulesService } from '../src/rules.service';
 
 describe('Excel交付', () => {
   it('生成九个工作表并保留自动汇总公式', async () => {
-    const project = { ...demoProject, status: 'published' as const, recommendations: new RulesService().match(demoProject, catalog) };
+    const project = { ...demoProject, status: 'processing' as const, recommendations: new RulesService().match(demoProject, catalog) };
     const data = await new ExcelService().generate(project);
     const wb = new ExcelJS.Workbook(); await wb.xlsx.load(data as unknown as ExcelJS.Buffer);
     expect(wb.worksheets).toHaveLength(9);

@@ -8,3 +8,8 @@ coverage
 .vercel
 *.tsbuildinfo
 opencode.json
+.playwright-cli
+output
+outputs
+packages/shared/dist
+apps/mini/.swc

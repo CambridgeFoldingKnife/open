@@ -44,8 +44,8 @@ async function seed() {
 
     for (const s of demoStaff) {
       await pool.query(
-        'INSERT INTO staff_accounts(id,email,password_hash,name,role,title,phone,active,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(id) DO UPDATE SET email=EXCLUDED.email,password_hash=EXCLUDED.password_hash,name=EXCLUDED.name,role=EXCLUDED.role,title=EXCLUDED.title,phone=EXCLUDED.phone,active=EXCLUDED.active',
-        [s.id, s.email, s.passwordHash, s.name, s.role, s.title, s.phone, s.active, s.createdAt]
+        'INSERT INTO staff_accounts(id,email,password_hash,name,role,title,phone,referral_code,active,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(id) DO UPDATE SET email=EXCLUDED.email,password_hash=EXCLUDED.password_hash,name=EXCLUDED.name,role=EXCLUDED.role,title=EXCLUDED.title,phone=EXCLUDED.phone,referral_code=EXCLUDED.referral_code,active=EXCLUDED.active',
+        [s.id, s.email, s.passwordHash, s.name, s.role, s.title, s.phone, s.referralCode || null, s.active, s.createdAt]
       );
     }
 

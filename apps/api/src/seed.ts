@@ -42,12 +42,12 @@ export const demoProject:OpeningProject={
   audiences:['跑者','久坐白领'],plannedServices:['运动损伤','体态矫正','运动表现'],openingDate:'2026-10-01',teamFoundation:'已有1名主理人及1名健身教练',
   readiness,readinessScore:readinessScore(readiness),capability,capabilityResult:capabilityScore(capability),quadrant:'expert',prototype:{primary:'community',alternative:'commercial',primaryReason:'',alternativeReason:'',rejectedReasons:[]},
   venue:{address:'杭州市滨江区',area:180,rentMonthly:26000,ceilingHeight:3.4,beds:3},renovation:{keywords:[],positioning:'',zoneRatios:[],circulation:[],essentials:[],recommended:[],deferred:[],risks:[]},licenses:[],staffing:[],quoteSummaries:[],
-  status:'review',consultantId:'staff-consultant',interviewNotes:'客户重视专业口碑，建议先聚焦跑者与久坐白领。',recommendations:[],version:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
+  status:'processing',consultantId:'staff-consultant',interviewNotes:'客户重视专业口碑，建议先聚焦跑者与久坐白领。',recommendations:[],version:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
 };
 export const demoLead:Lead={id:'lead-demo',userId:'customer-1',projectId:'project-demo',name:'林女士',phone:'13800002468',email:'lin@example.com',city:'杭州',identity:'investor',budget:800000,area:180,openingDate:'2026-10-01',quadrant:'expert',prototype:'commercial',quoteAmount:0,marketingConsent:true,status:'qualified',assignedConsultantId:'staff-consultant',nextFollowUpAt:'2026-07-16T06:00:00.000Z',expectedAmount:42000,probability:65,lastNote:'客户等待装修建议与设备标准版报价。',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
 
 const defaultHash=hashPassword('123456');
 export const demoStaff:StaffAccount[]=[
   {id:'staff-admin',email:'admin@jianheng.com',passwordHash:defaultHash,name:'管理员',role:'admin',title:'系统管理员',phone:'13800000001',active:true,createdAt:new Date().toISOString()},
-  {id:'staff-consultant',email:'consultant@jianheng.com',passwordHash:defaultHash,name:'李顾问',role:'consultant',title:'高级顾问',phone:'13800000002',active:true,createdAt:new Date().toISOString()}
+  {id:'staff-consultant',email:'consultant@jianheng.com',passwordHash:defaultHash,name:'李顾问',role:'consultant',title:'高级顾问',phone:'13800000002',referralCode:'jianheng001',active:true,createdAt:new Date().toISOString()}
 ];

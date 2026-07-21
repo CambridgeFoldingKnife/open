@@ -159,6 +159,7 @@ export class RulesService {
   ];}
 
   private quoteSummaries(items:Recommendation[]){const tiers=[['starter','基础版',new Set(['essential'])],['standard','标准版',new Set(['essential','recommended'])],['premium','升级版',new Set(['essential','recommended','upgrade'])]] as const;return tiers.map(([tier,label,allowed])=>{const rows=items.filter(x=>x.kind==='equipment'&&allowed.has(x.priority as any));return{tier,label,total:rows.reduce((s,x)=>s+(x.unitPrice||0)*x.quantity,0),itemCount:rows.length,inquiryCount:rows.filter(x=>x.priceStatus!=='approved').length};});}
+  recalcQuoteSummaries(recommendations:Recommendation[]){return this.quoteSummaries(recommendations);}
   private quantity(project:OpeningProject,item:CatalogItem){if(item.name.includes('治疗床')||item.name.includes('PT凳'))return Math.max(1,Math.min(4,project.venue.beds||Math.ceil(project.area/60)));if(item.name.includes('弹力')||item.name.includes('筋膜球'))return Math.max(2,Math.ceil(project.area/50));return 1;}
   private reason(project:OpeningProject,item:CatalogItem){return `${item.required?'基础配置':'建议配置'}：适配${prototypeMeta[project.prototype.primary].name}${item.serviceTags.length?`的${item.serviceTags.join('、')}项目`:''}，符合${project.area}㎡场地与当前预算。`;}
 }

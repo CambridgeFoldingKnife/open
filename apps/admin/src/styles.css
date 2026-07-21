@@ -449,3 +449,431 @@ body {
     font-size: 28px !important;
   }
 }
+
+/* 项目详情页样式 */
+.project-detail-page {
+  margin-top: 8px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.header-left {
+  flex-shrink: 0;
+}
+
+.header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.header-center h4 {
+  margin-bottom: 4px !important;
+}
+
+.header-right {
+  flex-shrink: 0;
+}
+
+/* 简化版报告样式 */
+.report-view {
+  padding: 8px 0;
+}
+
+.report-cover {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.report-cover-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+}
+
+.quadrant-info {
+  flex: 1;
+}
+
+.quadrant-info .kicker {
+  color: #b69670;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.quadrant-info h2 {
+  color: #fff !important;
+  margin: 8px 0 !important;
+}
+
+.result-tags {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.result-tags span {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.quadrant-chart {
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+}
+
+.report-section {
+  margin-bottom: 24px;
+}
+
+.report-section h4 {
+  margin-bottom: 16px !important;
+  font-weight: 600;
+}
+
+.diagnosis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.diagnosis-card {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.diagnosis-card h5 {
+  margin: 8px 0 !important;
+}
+
+.quote-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.quote-card {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.quote-card.featured {
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  color: #fff;
+}
+
+.quote-card h3 {
+  margin: 8px 0 !important;
+}
+
+/* 四象限图简化版 */
+.quadrant-simple {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.q-label {
+  position: absolute;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.q-label.tl { top: 8px; left: 8px; }
+.q-label.tr { top: 8px; right: 8px; }
+.q-label.bl { bottom: 8px; left: 8px; }
+.q-label.br { bottom: 8px; right: 8px; }
+
+.q-point {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: #d4b58f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, 50%);
+}
+
+.q-point b {
+  color: #1e293b;
+  font-size: 12px;
+}
+
+.quadrant-simple .x,
+.quadrant-simple .y {
+  position: absolute;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: normal;
+}
+
+.quadrant-simple .x {
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.quadrant-simple .y {
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+}
+
+/* 盈亏平衡看板简化版 */
+.be-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.be-hero {
+  grid-column: span 2;
+  background: #f8fafc;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.be-costs {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.cost-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cost-row:last-child {
+  border-bottom: none;
+}
+
+.cost-row.total {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid #e2e8f0;
+  border-bottom: none;
+}
+
+/* 甘特图简化版 */
+.gantt-simple {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.gantt-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.gantt-axis span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.gantt-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.gantt-row:last-child {
+  border-bottom: none;
+}
+
+.gantt-task {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.gantt-task .ant-typography:first-child {
+  font-size: 11px;
+}
+
+.gantt-bar {
+  flex: 1;
+  height: 20px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  position: relative;
+}
+
+.gantt-bar-inner {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(90deg, #0891b2, #0e7490);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+}
+
+/* 装修方案简化版 */
+.renovation-simple {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.zone-chart {
+  display: flex;
+  height: 120px;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.zone-bar {
+  position: absolute;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 8px;
+}
+
+.zone-bar .ant-typography {
+  font-size: 12px;
+}
+
+.circulation {
+  padding-top: 16px;
+  border-top: 3px solid #e66f3e;
+}
+
+/* 证照清单简化版 */
+.license-list {
+  display: grid;
+  gap: 12px;
+}
+
+.license-item {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.license-content {
+  flex: 1;
+}
+
+.license-content .ant-typography {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* 招聘计划简化版 */
+.job-list {
+  display: grid;
+  gap: 12px;
+}
+
+.job-item {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.job-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.job-detail .ant-typography {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+/* 产品报价单样式 */
+.product-quote-tab {
+  padding: 8px 0;
+}
+
+.quote-summary-section {
+  margin-bottom: 24px;
+}
+
+.quote-summary-section h5 {
+  margin-bottom: 16px !important;
+}
+
+.quote-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.equipment-table-section h5 {
+  margin-bottom: 16px !important;
+}
+
+/* 导出选择器深色字体 */
+.export-select .ant-select-selection-item {
+  color: #1e293b !important;
+}
+
+.export-select .ant-select-selection-placeholder {
+  color: #1e293b !important;
+}
+
+.export-select .ant-select-selection-search-input {
+  color: #1e293b !important;
+}
+
+.export-select.ant-select .ant-select-selector {
+  color: #1e293b !important;
+}
+
+/* 用户项目列表样式 */
+.ant-card-hoverable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ant-card-hoverable:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}

@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS staff_accounts (
   role text NOT NULL CHECK (role IN ('admin','consultant')),
   title text NOT NULL DEFAULT '',
   phone text NOT NULL DEFAULT '',
+  referral_code text UNIQUE,
   active boolean NOT NULL DEFAULT true,
   created_at timestamptz NOT NULL DEFAULT now()
 );
