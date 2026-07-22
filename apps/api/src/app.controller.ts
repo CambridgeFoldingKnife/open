@@ -54,5 +54,5 @@ export class AppController {
   @Post('staff/:id/toggle-active') @Roles('admin') toggleStaff(@CurrentActor() actor:Actor,@Param('id') id:string){return this.store.toggleStaffActive(actor,id);}
   @Put('catalog/:id') @Roles('admin') updateCatalog(@CurrentActor() actor:Actor,@Param('id') id:string,@Body() item:CatalogItem){return this.store.upsertCatalog(actor,{...item,id});}
   @Delete('catalog/:id') @Roles('admin') deleteCatalog(@CurrentActor() actor:Actor,@Param('id') id:string){return this.store.deleteCatalog(actor,id);}
-  @Get('stats') @Roles('admin') stats(@CurrentActor() actor:Actor){return this.store.getStats(actor);}
+  @Get('stats') @Roles('admin') stats(@CurrentActor() actor:Actor,@Query('start') start?:string,@Query('end') end?:string){return this.store.getStats(actor,{start,end});}
 }

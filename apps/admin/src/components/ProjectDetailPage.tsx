@@ -1,8 +1,7 @@
-import{useState,useEffect}from'react';
-import{App,Button,Card,Empty,Modal,Select,Space,Spin,Tabs,Tag,Typography}from'antd';
+import{useState}from'react';
+import{Button,Card,Select,Space,Tabs,Tag,Typography}from'antd';
 import{ArrowLeftOutlined,DownloadOutlined}from'@ant-design/icons';
 import type{OpeningProject,Role}from'@opening/shared';
-import{normalizeProjectStatus}from'@opening/shared';
 import{getProjectStatusTag}from'../utils/status';
 import{api,getToken}from'../api';
 import ReportView from'./ReportView';
@@ -14,39 +13,15 @@ interface ProjectDetailPageProps{
   project:OpeningProject;
   role?:Role;
   onBack:()=>void;
+  onAction?:(path:string,body?:unknown,method?:string)=>Promise<void>;
 }
 
-export default function ProjectDetailPage({project:onBackProject,role,onBack}:ProjectDetailPageProps){
-  const{message}=App.useApp();
+export default function ProjectDetailPage({project:onBackProject,role,onBack,onAction}:ProjectDetailPageProps){
   const[project,setProject]=useState<OpeningProject>(onBackProject);
   const[loading,setLoading]=useState(false);
-  const[confirming,setConfirming]=useState(false);
 
   const statusTag=getProjectStatusTag(project);
-  const canManage=['admin','consultant'].includes(role||'');
-
-  const refreshProject=async()=>{
-    setLoading(true);
-    try{const p=await api(`/projects/${project.id}`);setProject(p);}catch(e){console.error(e);}
-    finally{setLoading(false);}
-  };
-
-  const processProject=async()=>{
-    setLoading(true);
-    try{await api(`/projects/${project.id}/process`,{method:'POST'});message.success('已开始跟进');await refreshProject();}catch(e){message.error((e as Error).message);}
-    finally{setLoading(false);}
-  };
-
-  const completeProject=()=>{
-    setConfirming(true);
-  };
-
-  const confirmComplete=async()=>{
-    setConfirming(false);
-    setLoading(true);
-    try{await api(`/projects/${project.id}/complete`,{method:'POST'});message.success('已标记为已完成');await refreshProject();}catch(e){message.error((e as Error).message);}
-    finally{setLoading(false);}
-  };
+  const canEdit=['consultant','admin'].includes(role||'');
 
   const downloadFormat=(fmt:string)=>{
     const token=getToken();
@@ -55,6 +30,43 @@ export default function ProjectDetailPage({project:onBackProject,role,onBack}:Pr
     a.href=`${import.meta.env.VITE_API_URL||''}/projects/${project.id}/export?format=${fmt}&token=${token}`;
     a.download=`opening-plan-${project.id}.${fmt}`;
     a.click();
+  };
+
+  const transition=async(next:'process'|'complete')=>{
+    if(!onAction)return;
+    setLoading(true);
+    try{
+      await onAction(`/projects/${project.id}/${next}`);
+      const fresh=await api(`/projects/${project.id}`) as OpeningProject;
+      setProject(fresh);
+    }catch(e){
+      console.error(e);
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  const renderActionButton=()=>{
+    if(!canEdit)return null;
+    if(project.status==='pending'){
+      return(
+        <Button type="primary"loading={loading}onClick={()=>transition('process')}>
+          开始处理
+        </Button>
+      );
+    }
+    if(project.status==='processing'){
+      return(
+        <Button type="primary"loading={loading}onClick={()=>transition('complete')}>
+          标记完成
+        </Button>
+      );
+    }
+    return(
+      <Button disabled>
+        已完成
+      </Button>
+    );
   };
 
   return(
@@ -77,23 +89,26 @@ export default function ProjectDetailPage({project:onBackProject,role,onBack}:Pr
               {project.city}·{project.venueTypeName||'待定位'}
             </Title>
             <Tag color={statusTag.color}>{statusTag.text}</Tag>
-            {canManage&&!project.deletedAt&&normalizeProjectStatus(project.status)==='pending'&&<Button type="primary"loading={loading}onClick={processProject}>开始跟进</Button>}
-            {canManage&&!project.deletedAt&&normalizeProjectStatus(project.status)==='processing'&&<Button type="primary"loading={loading}onClick={completeProject}>标记已完成</Button>}
           </Space>
           <Text type="secondary">{project.area}㎡ · 预算{Math.round(project.budget/10000)}万</Text>
         </div>
         <div className="header-right">
-          <Select 
-            defaultValue="" 
-            className="export-select"
-            style={{width:120}}
-            placeholder="导出 PDF"
-            onChange={(value)=>value&&downloadFormat(value)}
-            options={[
-              {value:'pdf',label:'PDF'}
-            ]}
-            optionLabelProp="label"
-          />
+          <Space>
+            {renderActionButton()}
+            <Select 
+              defaultValue="" 
+              className="export-select"
+              style={{width:120}}
+              placeholder="导出"
+              onChange={(value)=>value&&downloadFormat(value)}
+              options={[
+                {value:'excel',label:'Excel'},
+                {value:'pdf',label:'PDF'},
+                {value:'md',label:'Markdown'}
+              ]}
+              optionLabelProp="label"
+            />
+          </Space>
         </div>
       </div>
 
@@ -108,16 +123,6 @@ export default function ProjectDetailPage({project:onBackProject,role,onBack}:Pr
           </Tabs.TabPane>
         </Tabs>
       </Card>
-      <Modal
-        title="确定完成该项目？"
-        open={confirming}
-        onOk={confirmComplete}
-        onCancel={()=>setConfirming(false)}
-        okText="确定"
-        cancelText="取消"
-      >
-        确认后项目状态将更新为「已完成」。
-      </Modal>
     </div>
   );
 }

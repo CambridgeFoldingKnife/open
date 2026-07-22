@@ -111,6 +111,21 @@ export interface FollowUp { id: string; leadId: string; consultantId: string; ch
 export interface StaffAccount { id: string; email: string; passwordHash: string; name: string; role: Role; title: string; phone: string; referralCode?: string; active: boolean; createdAt: string; }
 export interface AuditEvent { id: string; projectId: string; actorId: string; actorRole: Role; action: string; detail: string; at: string; }
 
+export interface StatsQuery { start?: string; end?: string; }
+export interface EquipmentSalesItem { name: string; quantity: number; revenue: number; }
+export interface MonthlyRevenue { month: string; revenue: number; count: number; }
+export interface FunnelStage { stage: string; label: string; count: number; }
+export interface ConsultantStat { id: string; name: string; projectCount: number; wonCount: number; revenue: number; }
+export interface StatsResponse {
+  totalUsers: number; totalProjects: number; totalWon: number; totalRevenue: number;
+  projectsByStatus: Record<string, number>; consultantStats: ConsultantStat[];
+  recentProjects: OpeningProject[];
+  equipmentSales: EquipmentSalesItem[];
+  funnel: FunnelStage[];
+  monthlyRevenue: MonthlyRevenue[];
+  periodLabel: string;
+}
+
 export const emptyCapability = (): CapabilityAnswers => ({ professionalBackground:50,assessmentIntervention:50,riskRecognition:50,cases:50,teachingTeam:50,customerResources:50,contentAcquisition:50,salesConversion:50,management:50,fundingTeam:50 });
 export const readinessScore = (a: ReadinessAnswers) => Math.round((a.capital + a.resources + a.involvement + a.returnExpectation + a.riskTolerance) / 5);
 export const readinessBand = (score: number) => score < 60 ? '准备不足' : score < 80 ? '有条件推进' : '准备充分';

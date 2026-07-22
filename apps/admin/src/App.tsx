@@ -1,6 +1,8 @@
 import{useEffect,useMemo,useRef,useState}from'react';
-import{App as AntApp,Avatar,Badge,Button,Card,Col,Descriptions,Drawer,Empty,Form,Input,InputNumber,Layout,Menu,Modal,Popconfirm,Progress,Row,Select,SelectProps,Space,Statistic,Switch,Table,Tag,Typography}from'antd';
-import{AuditOutlined,BarChartOutlined,CheckOutlined,CopyOutlined,DashboardOutlined,DeleteOutlined,DownloadOutlined,EditOutlined,FilePdfOutlined,HomeOutlined,LogoutOutlined,PhoneOutlined,PlusOutlined,ProductOutlined,SearchOutlined,TeamOutlined,UserOutlined}from'@ant-design/icons';
+import{App as AntApp,Avatar,Badge,Button,Card,Col,DatePicker,Descriptions,Drawer,Empty,Form,Input,InputNumber,Layout,Menu,Modal,Popconfirm,Progress,Radio,Row,Select,SelectProps,Space,Statistic,Switch,Table,Tag,Typography}from'antd';
+import{AuditOutlined,BarChartOutlined,CheckCircleOutlined,CheckOutlined,CopyOutlined,DashboardOutlined,DeleteOutlined,DownloadOutlined,EditOutlined,FilePdfOutlined,HomeOutlined,LogoutOutlined,MoneyCollectOutlined,PhoneOutlined,PlusOutlined,ProductOutlined,ProjectOutlined,SearchOutlined,TeamOutlined,UserOutlined}from'@ant-design/icons';
+import dayjs from'dayjs';
+import ReactECharts from'echarts-for-react';
 import type{CatalogItem,FollowUp,Lead,LeadStatus,OpeningProject,Recommendation,Role,StaffAccount,UserAccount}from'@opening/shared';
 import{leadStatusLabels,normalizeProjectStatus,prototypeMeta,quadrantMeta}from'@opening/shared';
 import{statusColor,projectStatusLabels}from'./utils/status';
@@ -39,8 +41,21 @@ function App(){const{message}=AntApp.useApp();
 
   useEffect(()=>{const t=getToken();if(!t){setAuthChecked(true);return;}api('/auth/staff/me').then(function(s){setStaff(s);}).catch(function(){clearToken();}).finally(function(){setAuthChecked(true);});},[]);
 
-  const load=async()=>{setLoading(true);try{const b=await api('/bootstrap') as any;setProjects(b.projects);if(['admin','consultant'].includes(role)){const c=await api('/catalog') as any;setCatalog(c);}if(['admin','consultant'].includes(role)){const l=await api('/leads') as any;setLeads(l);}if(role==='admin'){const[su,ss,st]=await Promise.all([api('/users')as any,api('/staff')as any,api('/stats')as any]);setUsers(su);setStaffList(ss);setDashboardStats(st);}}catch(e){message.error((e as Error).message)}finally{setLoading(false)}};
-  useEffect(()=>{if(staff)load();},[staff]);const stats=useMemo(()=>{const active=projects.filter(p=>!p.deletedAt&&p.status!=='completed').length;const pipeline=leads.reduce((s,l)=>s+(l.expectedAmount||l.quoteAmount||0),0);const unassignedLeads=leads.filter(l=>!l.assignedConsultantId).length;const myLeads=leads.filter(l=>l.assignedConsultantId===staff?.id&&l.status!=='won'&&l.status!=='lost').length;return{active,pipeline,unassignedLeads,myLeads};},[projects,leads,staff]);
+  // 动态设置浏览器标签页标题
+  useEffect(()=>{
+    if(staff){
+      const titleMap:Record<Role,string>={
+        admin:'管理员工作台',
+        consultant:'顾问工作台',
+        customer:'客户工作台'
+      };
+      document.title=`开馆助手 · ${titleMap[staff.role]||'工作台'}`;
+    }
+  },[staff]);
+
+  const load=async()=>{setLoading(true);try{const b=await api('/bootstrap') as any;setProjects(b.projects);if(['admin','consultant'].includes(role)){const c=await api('/catalog') as any;setCatalog(c);}if(['admin','consultant'].includes(role)){const l=await api('/leads') as any;setLeads(l);}if(role==='admin'){const[su,ss]=await Promise.all([api('/users')as any,api('/staff')as any]);setUsers(su);setStaffList(ss);}}catch(e){message.error((e as Error).message)}finally{setLoading(false)}};
+  const loadStats=async(query:string)=>{try{const st=await api(`/stats${query?'?'+query:''}`) as any;setDashboardStats(st);}catch(e){message.error((e as Error).message)}};
+  useEffect(()=>{if(staff){load();loadStats('');}},[staff]);const stats=useMemo(()=>{const active=projects.filter(p=>!p.deletedAt&&p.status!=='completed').length;const pipeline=leads.reduce((s,l)=>s+(l.expectedAmount||l.quoteAmount||0),0);const unassignedLeads=leads.filter(l=>!l.assignedConsultantId).length;const myLeads=leads.filter(l=>l.assignedConsultantId===staff?.id&&l.status!=='won'&&l.status!=='lost').length;return{active,pipeline,unassignedLeads,myLeads};},[projects,leads,staff]);
   const action=async(path:string,body?:unknown,method='POST')=>{try{await api(path,{method,body:body?JSON.stringify(body):undefined});message.success('操作已完成');setSelected(undefined);setSelectedLead(undefined);load()}catch(e){message.error((e as Error).message)}};
 
   const canViewLeads=['admin','consultant'].includes(role);
@@ -81,11 +96,20 @@ function App(){const{message}=AntApp.useApp();
   if(!staff)return <AntApp><LoginPage onLogin={handleLogin}/></AntApp>;
 
   const webUrl=(import.meta.env.VITE_WEB_URL as string|undefined)||window.location.origin;
-  const inviteLink=staff.referralCode?`${webUrl}/?ref=${staff.referralCode}`:'';const copyInvite=()=>{if(!inviteLink)return;navigator.clipboard.writeText(inviteLink).then(()=>message.success('邀请链接已复制'));};const copyInviteCode=()=>{if(!staff.referralCode)return;navigator.clipboard.writeText(staff.referralCode).then(()=>message.success('推荐码已复制'));};return <Layout className="shell"><Sider width={248}className="sider"><div className="brand"><div className="brand-mark">衡</div><div><b>开馆助手</b><span>REHAB OPENING OS</span></div></div><Menu theme="dark"selectedKeys={[page]}onClick={e=>{setPage(e.key);setViewMode('list');}}items={menuItems}/><div className="side-foot"><span>当前工作空间</span><b>健衡开馆服务中心</b></div></Sider><Layout><Header className="topbar"><div><Text type="secondary">报价、审核与成交跟进</Text><Title level={4}>开馆服务工作台</Title></div><Space>{role==='consultant'&&staff.referralCode&&<><Button type="text"icon={<CopyOutlined/>}onClick={copyInvite}>复制邀请链接</Button><Button type="text"onClick={copyInviteCode}>推荐码: {staff.referralCode}</Button></>}<Tag color={roleColor[role]}>{roleLabel[role]}</Tag><Avatar className="avatar">{staff.name[0]}</Avatar><Button type="text"icon={<LogoutOutlined/>}onClick={handleLogout}>退出</Button></Space></Header><Content className="content">
+  const inviteLink=staff.referralCode?`${webUrl}/?ref=${staff.referralCode}`:'';const copyInvite=()=>{if(!inviteLink)return;navigator.clipboard.writeText(inviteLink).then(()=>message.success('邀请链接已复制'));};const copyInviteCode=()=>{if(!staff.referralCode)return;navigator.clipboard.writeText(staff.referralCode).then(()=>message.success('推荐码已复制'));};
+
+  // 角色对应的标题映射
+  const headerTitleMap:Record<Role,string>={
+    admin:'管理后台',
+    consultant:'顾问工作台',
+    customer:'客户中心'
+  };
+
+  return <Layout className="shell"><Sider width={248}className="sider"><div className="brand"><div className="brand-mark">衡</div><div><b>开馆助手</b><span>REHAB OPENING OS</span></div></div><Menu theme="dark"selectedKeys={[page]}onClick={e=>{setPage(e.key);setViewMode('list');}}items={menuItems}/><div className="side-foot"><span>当前工作空间</span><b>健衡开馆服务中心</b></div></Sider><Layout><Header className="topbar"><div><Text type="secondary">报价、审核与成交跟进</Text><Title level={4}>{headerTitleMap[role]||'工作台'}</Title></div><Space>{role==='consultant'&&staff.referralCode&&<><Button type="text"icon={<CopyOutlined/>}onClick={copyInvite}>复制邀请链接</Button><Button type="text"onClick={copyInviteCode}>推荐码: {staff.referralCode}</Button></>}<Tag color={roleColor[role]}>{roleLabel[role]}</Tag><Avatar className="avatar">{staff.name[0]}</Avatar><Button type="text"icon={<LogoutOutlined/>}onClick={handleLogout}>退出</Button></Space></Header><Content className="content">
   {page==='projects'&&viewMode==='list'&&<ProjectPage projects={projects}loading={loading}query={query}setQuery={setQuery}stats={stats}role={role}onOpenUserProjects={handleOpenUserProjects}onRefresh={load}/>}
   {page==='projects'&&viewMode==='user-projects'&&<UserProjectsPage customerId={selectedCustomerId}role={role}onBack={handleBackToProjectList}onOpenProject={handleOpenProjectDetail}/>}
-  {page==='projects'&&viewMode==='project-detail'&&selectedProjectForDetail&&<ProjectDetailPage project={selectedProjectForDetail}role={role}onBack={handleBackToUserProjects}/>}
-  {page==='leads'&&canViewLeads&&<LeadPage leads={leads}loading={loading}query={query}setQuery={setQuery}onOpen={setSelectedLead}/>} {page==='catalog'&&canViewCatalog&&<CatalogPage items={catalog}role={role}onSaved={load}/>} {page==='dashboard'&&role==='admin'&&<DashboardPage stats={stats}staffList={staffList}loading={loading}/>} {page==='users'&&role==='admin'&&<UserPage users={users}projects={projects}loading={loading}onSaved={load}/>} {page==='staff-mgmt'&&role==='admin'&&<StaffPage staffList={staffList}loading={loading}onSaved={load}/>}
+  {page==='projects'&&viewMode==='project-detail'&&selectedProjectForDetail&&<ProjectDetailPage project={selectedProjectForDetail}role={role}onBack={handleBackToUserProjects}onAction={action}/>}
+  {page==='leads'&&canViewLeads&&<LeadPage leads={leads}loading={loading}query={query}setQuery={setQuery}onOpen={setSelectedLead}/>} {page==='catalog'&&canViewCatalog&&<CatalogPage items={catalog}role={role}onSaved={load}/>}   {page==='dashboard'&&role==='admin'&&<DashboardPage stats={dashboardStats}staffList={staffList}loading={loading}onLoadStats={loadStats}/>} {page==='users'&&role==='admin'&&<UserPage users={users}projects={projects}loading={loading}onSaved={load}/>} {page==='staff-mgmt'&&role==='admin'&&<StaffPage staffList={staffList}loading={loading}onSaved={load}/>}
   </Content></Layout><LeadDrawer lead={selectedLead}projects={projects}role={role}onClose={()=>setSelectedLead(undefined)}onAction={action}/></Layout>}
 
 function ProjectPage({projects,loading,query,setQuery,stats,role,onOpenUserProjects,onRefresh}:{projects:OpeningProject[];loading:boolean;query:string;setQuery:(x:string)=>void;stats:any;role:Role;onOpenUserProjects:(customerId:string)=>void;onRefresh:()=>void}){
@@ -113,22 +137,294 @@ function LeadDrawer({lead,projects,role,onClose,onAction}:{lead?:Lead;projects:O
 
 function CatalogPage({items,role,onSaved}:{items:CatalogItem[];role:Role;onSaved:()=>void}){const{message}=AntApp.useApp();const isAdmin=role==='admin';const[open,setOpen]=useState(false);const[editing,setEditing]=useState<CatalogItem|null>(null);const[form]=Form.useForm();const save=async()=>{const v=await form.validateFields();if(editing){await api(`/catalog/${editing.id}`,{method:'PUT',body:JSON.stringify({...editing,...v})});message.success('产品已更新');}else{await api('/catalog',{method:'POST',body:JSON.stringify({...v,id:`item-${Date.now()}`,active:true,minArea:v.minArea||0,minBudget:v.minBudget||0,serviceTags:[],audienceTags:[],description:v.description||'',venueTypeIds:[],prototypeIds:v.prototypeIds||[]})});}setOpen(false);setEditing(null);form.resetFields();onSaved()};const openEdit=(item:CatalogItem)=>{setEditing(item);form.setFieldsValue(item);setOpen(true);};const del=async(id:string)=>{await api(`/catalog/${id}`,{method:'DELETE'});message.success('产品已删除');onSaved()};return <Card className="panel"title="产品规格与价格主表"extra={isAdmin&&<Button type="primary"icon={<PlusOutlined/>}onClick={()=>{setEditing(null);form.resetFields();setOpen(true)}}>新增规格</Button>}><Table rowKey="id"dataSource={items.filter(x=>x.kind==='equipment')}columns={[{title:'产品 / 规格',render:(_,x)=><><b>{x.name}</b><div className="muted">{x.specification||x.variantId}</div></>},{title:'分类',dataIndex:'category'},{title:'画册价',dataIndex:'catalogPrice',render:v=>v?`¥${v}`:'—'},{title:'历史价',dataIndex:'historicalPrice',render:v=>v?`¥${v}`:'—'},{title:'标准报价',dataIndex:'approvedPrice',render:v=>v?`¥${v}`:'—'},{title:'价格状态',dataIndex:'priceStatus',render:s=><Tag color={s==='approved'?'green':s==='conflict'?'red':'orange'}>{s==='approved'?'已审核':s==='conflict'?'冲突':'询价'}</Tag>},{title:'来源',dataIndex:'source'},...(isAdmin?[{title:'操作',render:(_:any,x:CatalogItem)=><Space><Button type="link"icon={<EditOutlined/>}onClick={()=>openEdit(x)}>编辑</Button><Popconfirm title="确定删除？"onConfirm={()=>del(x.id)}><Button type="link"danger>删除</Button></Popconfirm></Space>}]:[])]}/><Modal open={open}onCancel={()=>{setOpen(false);setEditing(null);form.resetFields();}}onOk={save}title={editing?'编辑产品':'新增产品'}><Form form={form}layout="vertical"><Form.Item name="name"label="产品名称"rules={[{required:true}]}><Input/></Form.Item><Form.Item name="specification"label="规格"><Input/></Form.Item><Form.Item name="category"label="分类"><Input/></Form.Item><Form.Item name="catalogPrice"label="画册价"><InputNumber style={{width:'100%'}}/></Form.Item><Form.Item name="approvedPrice"label="标准报价"><InputNumber style={{width:'100%'}}/></Form.Item><Form.Item name="source"label="来源"><Input/></Form.Item></Form></Modal></Card>}
 
-function DashboardPage({stats,staffList,loading}:{stats:any;staffList:StaffAccount[];loading:boolean}){
+function DashboardPage({stats,staffList,loading,onLoadStats}:{stats:any;staffList:StaffAccount[];loading:boolean;onLoadStats:(query:string)=>void}){
   const dashboardRef=useRef<HTMLDivElement>(null);
   const[exporting,setExporting]=useState(false);
+  const[dateRange,setDateRange]=useState<'all'|'month'|'quarter'|'year'|'custom'>('all');
+  const[customRange,setCustomRange]=useState<any>(null);
   const handleExportPdf=async()=>{
     if(!dashboardRef.current||exporting)return;
     setExporting(true);
     try{await exportElementToPdf(dashboardRef.current,'数据统计表');}finally{setExporting(false);}
   };
+  const handleDateChange=(key:'all'|'month'|'quarter'|'year'|'custom')=>{
+    setDateRange(key);
+    if(key==='all'){onLoadStats('');return;}
+    const now=dayjs();
+    const end=now.format('YYYY-MM-DD');
+    let start='';
+    if(key==='month')start=now.startOf('month').format('YYYY-MM-DD');
+    else if(key==='quarter')start=(now as any).startOf('quarter').format('YYYY-MM-DD');
+    else if(key==='year')start=now.startOf('year').format('YYYY-MM-DD');
+    onLoadStats(`start=${start}&end=${end}`);
+  };
+  const handleCustomRange=(dates:any)=>{
+    setCustomRange(dates);
+    if(dates&&dates[0]&&dates[1]){
+      setDateRange('custom');
+      onLoadStats(`start=${dates[0].format('YYYY-MM-DD')}&end=${dates[1].format('YYYY-MM-DD')}`);
+    }
+  };
   if(!stats)return <Card className="panel"loading={loading}><Empty description="加载中..."/></Card>;
+
+  // 专业ECharts配置 - 营收趋势
+  const revenueOption={
+    tooltip:{
+      trigger:'axis',
+      backgroundColor:'rgba(255,255,255,0.95)',
+      borderColor:'#e8ecf1',
+      borderWidth:1,
+      textStyle:{color:'#1e293b',fontSize:12},
+      formatter:(params:any)=>{
+        const item=params[0];
+        return `<div style="font-weight:500">${item.name}</div><div style="margin-top:4px;color:#1677ff">营收: ${(item.value/10000).toFixed(2)}万元</div>`;
+      }
+    },
+    xAxis:{
+      type:'category',
+      data:(stats.monthlyRevenue||[]).map((m:any)=>m.month),
+      axisLine:{lineStyle:{color:'#e8ecf1'}},
+      axisTick:{show:false},
+      axisLabel:{color:'#64748b',fontSize:11}
+    },
+    yAxis:{
+      type:'value',
+      name:'万元',
+      nameTextStyle:{color:'#94a3b8',fontSize:11,padding:[0,40,0,0]},
+      axisLine:{show:false},
+      axisTick:{show:false},
+      splitLine:{lineStyle:{color:'#f1f5f9',type:'dashed'}},
+      axisLabel:{color:'#94a3b8',fontSize:11,formatter:(v:number)=>`${(v/10000).toFixed(0)}`}
+    },
+    grid:{left:50,right:16,top:28,bottom:24},
+    series:[{
+      name:'营收',
+      type:'line',
+      data:(stats.monthlyRevenue||[]).map((m:any)=>m.revenue),
+      smooth:true,
+      symbol:'circle',
+      symbolSize:6,
+      itemStyle:{color:'#1677ff',borderWidth:2,borderColor:'#fff'},
+      lineStyle:{width:3,color:{type:'linear',x:0,y:0,x2:1,y2:0,colorStops:[{offset:0,color:'#1677ff'},{offset:1,color:'#4096ff'}]}},
+      areaStyle:{
+        color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(22,119,255,0.25)'},{offset:1,color:'rgba(22,119,255,0.02)'}]}
+      },
+      animationDuration:1000,
+      animationEasing:'cubicOut'
+    }]
+  };
+
+  // 专业ECharts配置 - 设备销售柱状图
+  const equipmentOption={
+    tooltip:{
+      trigger:'axis',
+      axisPointer:{type:'shadow',shadowStyle:{color:'rgba(22,119,255,0.06)'}},
+      backgroundColor:'rgba(255,255,255,0.95)',
+      borderColor:'#e8ecf1',
+      borderWidth:1,
+      textStyle:{color:'#1e293b',fontSize:12}
+    },
+    xAxis:{
+      type:'category',
+      data:(stats.equipmentSales||[]).map((e:any)=>e.name),
+      axisLine:{lineStyle:{color:'#e8ecf1'}},
+      axisTick:{show:false},
+      axisLabel:{color:'#64748b',fontSize:11,rotate:25}
+    },
+    yAxis:{
+      type:'value',
+      name:'万元',
+      nameTextStyle:{color:'#94a3b8',fontSize:11,padding:[0,40,0,0]},
+      axisLine:{show:false},
+      axisTick:{show:false},
+      splitLine:{lineStyle:{color:'#f1f5f9',type:'dashed'}},
+      axisLabel:{color:'#94a3b8',fontSize:11,formatter:(v:number)=>`${(v/10000).toFixed(0)}`}
+    },
+    grid:{left:50,right:16,top:28,bottom:60},
+    series:[{
+      name:'销售额',
+      type:'bar',
+      barWidth:20,
+      data:(stats.equipmentSales||[]).map((e:any,i:number)=>({
+        value:e.revenue,
+        itemStyle:{
+          color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:i<3?'#1677ff':'#69b1ff'},{offset:1,color:i<3?'#4096ff':'#bae0ff'}]},
+          borderRadius:[4,4,0,0]
+        }
+      })),
+      label:{show:true,position:'top',fontSize:10,color:'#64748b',formatter:(p:any)=>`${(p.value/10000).toFixed(1)}万`},
+      animationDelay:(idx:number)=>idx*80
+    }]
+  };
+
+  // 专业ECharts配置 - 销售漏斗
+  const funnelColors=['#1677ff','#4096ff','#69b1ff','#91caff','#bae0ff'];
+  const funnelOption={
+    tooltip:{
+      trigger:'item',
+      backgroundColor:'rgba(255,255,255,0.95)',
+      borderColor:'#e8ecf1',
+      borderWidth:1,
+      textStyle:{color:'#1e293b',fontSize:12},
+      formatter:(p:any)=>`<div style="font-weight:500">${p.name}</div><div style="margin-top:4px">${p.value} 个</div>`
+    },
+    series:[{
+      name:'销售漏斗',
+      type:'funnel',
+      left:'8%',
+      top:16,
+      bottom:16,
+      width:'84%',
+      min:0,
+      max:(stats.funnel||[]).length>0?Math.max(...(stats.funnel||[]).map((f:any)=>f.count),1):100,
+      minSize:'20%',
+      maxSize:'100%',
+      sort:'descending',
+      gap:4,
+      label:{show:true,position:'inside',fontSize:12,color:'#fff',fontWeight:500},
+      itemStyle:{borderColor:'#fff',borderWidth:2,shadowBlur:4,shadowColor:'rgba(0,0,0,0.1)'},
+      emphasis:{label:{fontSize:14}},
+      data:(stats.funnel||[]).map((f:any,i:number)=>({
+        name:f.label,
+        value:f.count,
+        itemStyle:{color:funnelColors[i]||funnelColors[funnelColors.length-1]}
+      })),
+      animationDuration:800,
+      animationEasing:'cubicOut'
+    }]
+  };
+
+  // 专业ECharts配置 - 项目状态饼图
+  const pieColors=['#1677ff','#52c41a','#faad14','#ff4d4f','#722ed1','#13c2c2'];
+  const statusData=stats.projectsByStatus?Object.entries(stats.projectsByStatus).map(([k,v]:any)=>({name:projectStatusLabels[k]||k,value:v})):[];
+  const pieOption={
+    tooltip:{
+      trigger:'item',
+      backgroundColor:'rgba(255,255,255,0.95)',
+      borderColor:'#e8ecf1',
+      borderWidth:1,
+      textStyle:{color:'#1e293b',fontSize:12},
+      formatter:(p:any)=>`<div style="font-weight:500">${p.name}</div><div style="margin-top:4px">${p.value} 个 (${p.percent}%)</div>`
+    },
+    legend:{
+      orient:'vertical',
+      right:12,
+      top:'center',
+      textStyle:{color:'#64748b',fontSize:11},
+      itemWidth:10,
+      itemHeight:10,
+      itemGap:8
+    },
+    series:[{
+      name:'项目状态',
+      type:'pie',
+      radius:['45%','70%'],
+      center:['35%','50%'],
+      avoidLabelOverlap:false,
+      label:{show:false},
+      emphasis:{label:{show:true,fontSize:14,fontWeight:'bold'}},
+      labelLine:{show:false},
+      data:statusData.map((d:any,i:number)=>({...d,itemStyle:{color:pieColors[i%pieColors.length]}})),
+      animationType:'scale',
+      animationDuration:800,
+      animationEasing:'elasticOut'
+    }]
+  };
+
   return(
     <div ref={dashboardRef}>
-      <div style={{display:'flex',justifyContent:'flex-end',marginBottom:16}}>
-        <Button icon={<FilePdfOutlined/>} loading={exporting} onClick={handleExportPdf}>导出 PDF</Button>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+        <Space>
+          <Radio.Group value={dateRange}onChange={e=>handleDateChange(e.target.value)}size="small"optionType="button"buttonStyle="solid">
+            <Radio.Button value="all">全部</Radio.Button>
+            <Radio.Button value="month">本月</Radio.Button>
+            <Radio.Button value="quarter">本季</Radio.Button>
+            <Radio.Button value="year">本年</Radio.Button>
+          </Radio.Group>
+          <DatePicker.RangePicker size="small"value={customRange}onChange={handleCustomRange}placeholder={['开始日期','结束日期']}allowClear/>
+        </Space>
+        <Button icon={<FilePdfOutlined/>}loading={exporting}onClick={handleExportPdf}>导出 PDF</Button>
       </div>
-      <Row gutter={14}className="stats"><Col span={6}><Card><Statistic title="总用户数"value={stats.totalUsers}suffix="人"/></Card></Col><Col span={6}><Card><Statistic title="进行中项目"value={stats.totalProjects}suffix="个"/></Card></Col><Col span={6}><Card><Statistic title="已成交数"value={stats.totalWon}suffix="单"/></Card></Col><Col span={6}><Card><Statistic title="总营收"value={stats.totalRevenue/10000}precision={1}suffix="万元"/></Card></Col></Row>
-      <Row gutter={14}className="stats"><Col span={12}><Card title="项目状态分布"><Space wrap>{stats.projectsByStatus&&Object.entries(stats.projectsByStatus).map(([k,v])=><Tag key={k}color={statusColor[k]||'default'}>{projectStatusLabels[k]||k}: {v as number}个</Tag>)}</Space></Card></Col><Col span={12}><Card title="顾问业绩排行"><Table rowKey="id"dataSource={stats.consultantStats||[]}pagination={false}size="small"columns={[{title:'顾问',dataIndex:'name'},{title:'项目数',dataIndex:'projectCount'},{title:'成交',dataIndex:'wonCount'},{title:'营收',dataIndex:'revenue',render:v=>`${(v/10000).toFixed(1)}万`}]}/></Card></Col></Row>
+
+      {/* 统计卡片 */}
+      <div className="stat-row">
+        <div className="stat-card stat-card-blue">
+          <div className="stat-card-content">
+            <div className="stat-card-label">总用户数</div>
+            <div className="stat-card-value">{stats.totalUsers}<span className="stat-card-suffix">人</span></div>
+          </div>
+          <div className="stat-card-icon"><UserOutlined/></div>
+        </div>
+        <div className="stat-card stat-card-cyan">
+          <div className="stat-card-content">
+            <div className="stat-card-label">进行中项目</div>
+            <div className="stat-card-value">{stats.totalProjects}<span className="stat-card-suffix">个</span></div>
+          </div>
+          <div className="stat-card-icon"><ProjectOutlined/></div>
+        </div>
+        <div className="stat-card stat-card-green">
+          <div className="stat-card-content">
+            <div className="stat-card-label">已成交数</div>
+            <div className="stat-card-value">{stats.totalWon}<span className="stat-card-suffix">单</span></div>
+          </div>
+          <div className="stat-card-icon"><CheckCircleOutlined/></div>
+        </div>
+        <div className="stat-card stat-card-orange">
+          <div className="stat-card-content">
+            <div className="stat-card-label">总营收</div>
+            <div className="stat-card-value">{(stats.totalRevenue/10000).toFixed(1)}<span className="stat-card-suffix">万元</span></div>
+          </div>
+          <div className="stat-card-icon"><MoneyCollectOutlined/></div>
+        </div>
+      </div>
+
+      {/* 图表区域 - 2x2网格 */}
+      <div className="dashboard-grid">
+        <div className="chart-card">
+          <div className="chart-card-header">月度营收趋势</div>
+          <div className="chart-card-body">
+            {stats.monthlyRevenue?.length>0 ? <ReactECharts option={revenueOption} style={{height:240}}/> : <Empty description="暂无数据"/>}
+          </div>
+        </div>
+        <div className="chart-card">
+          <div className="chart-card-header">设备销售 Top 10</div>
+          <div className="chart-card-body">
+            {stats.equipmentSales?.length>0 ? <ReactECharts option={equipmentOption} style={{height:240}}/> : <Empty description="暂无数据"/>}
+          </div>
+        </div>
+        <div className="chart-card">
+          <div className="chart-card-header">销售转化漏斗</div>
+          <div className="chart-card-body">
+            {stats.funnel?.length>0 ? <ReactECharts option={funnelOption} style={{height:240}}/> : <Empty description="暂无数据"/>}
+          </div>
+        </div>
+        <div className="chart-card">
+          <div className="chart-card-header">项目状态分布</div>
+          <div className="chart-card-body">
+            {statusData.length>0 ? <ReactECharts option={pieOption} style={{height:240}}/> : <Empty description="暂无数据"/>}
+          </div>
+        </div>
+      </div>
+
+      {/* 顾问业绩排行 - 全宽 */}
+      <div className="chart-card" style={{marginTop:12}}>
+        <div className="chart-card-header">顾问业绩排行</div>
+        <div className="chart-card-body">
+          <Table
+            rowKey="id"
+            dataSource={stats.consultantStats||[]}
+            pagination={false}
+            size="small"
+            columns={[
+              {title:'排名',width:60,render:(_,__,i)=><span style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:20,height:20,borderRadius:'50%',background:i<3?['#1677ff','#4096ff','#69b1ff'][i]:'#e8ecf1',color:i<3?'#fff':'#64748b',fontSize:12,fontWeight:500}}>{i+1}</span>},
+              {title:'顾问',dataIndex:'name',render:(v:string)=><span style={{fontWeight:500}}>{v}</span>},
+              {title:'项目数',dataIndex:'projectCount',render:(v:number)=><span style={{color:'#1677ff',fontWeight:500}}>{v}</span>},
+              {title:'成交',dataIndex:'wonCount',render:(v:number)=><span style={{color:'#52c41a',fontWeight:500}}>{v}</span>},
+              {title:'营收',dataIndex:'revenue',render:(v:number)=><span style={{color:'#fa8c16',fontWeight:500}}>{(v/10000).toFixed(1)}万</span>}
+            ]}
+          />
+        </div>
+      </div>
     </div>
   );
 }
