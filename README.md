@@ -1,6 +1,6 @@
 # 运动康复馆开馆助手
 
-面向运动康复与精品训练场馆的微信开馆方案生成器，包含客户小程序、顾问管理后台、规则引擎和 Excel 交付。
+面向运动康复与精品训练场馆的开馆方案生成器，包含客户前端、顾问管理后台、规则引擎和 PDF 交付。
 
 ## 快速启动
 
@@ -138,14 +138,13 @@ npx tsx apps/api/src/run-migration.ts apps/api/sql/006_simplify_project_status.s
 
 管理端使用真实登录系统，基于 JWT token 认证。
 
-**测试账号：**
-
-执行 `npm run seed -w @opening/api` 后会生成以下账号：
+**测试账号（Supabase 数据库）：**
 
 | 邮箱 | 密码 | 角色 | 权限说明 |
 |---|---|---|---|
-| admin@jianheng.com | 123456 | admin | 全部功能 |
-| consultant@jianheng.com | 123456 | consultant | 自己的项目 + 销售线索 + 产品只读 |
+| test@test.com | 123456 | customer | 用户端功能 |
+| admin@jianheng.com | admin123 | admin | 全部功能 |
+| consultant@jianheng.com | consultant123 | consultant | 自己的项目 + 销售线索 + 产品只读 |
 
 **角色权限矩阵：**
 
@@ -164,7 +163,8 @@ npx tsx apps/api/src/run-migration.ts apps/api/sql/006_simplify_project_status.s
 
 ### 用户端（Web）
 
-用户端支持邮箱注册/登录，本地短信验证码固定为 `246810`。
+用户端支持邮箱注册/登录，验证码通过邮箱发送（SMTP: `smtpdm.aliyun.com:465`，发件人：`no-reply@mail.camknife.me`）。
+开发环境本地短信验证码固定为 `246810`。
 
 ### 顾问邀请与客户归属
 
@@ -210,7 +210,7 @@ npm run dev:mini
 ## 构建与部署
 
 ```bash
-# 完整构建
+# 完整构建（shared → api → web → admin）
 npm run build
 
 # 仅构建 shared 包
@@ -220,9 +220,43 @@ npm run build -w @opening/shared
 npm run typecheck
 ```
 
-## 生产环境注意事项
+微信小程序排除在 Vercel 部署之外，通过 `vercel.json` 的 `installCommand` 中 `--ignore` 参数排除。
 
-- 替换 JWT 密钥（`apps/api/src/auth.ts` 中的 `AUTH_SECRET`）
+## 线上部署
+
+| 服务 | 平台 | 地址 |
+|---|---|---|
+| API 后端 | Railway | https://open-production-4d6b.up.railway.app |
+| 用户前端 | Vercel | https://rehab-web.vercel.app |
+| 管理后台 | Vercel | https://rehab-admin.vercel.app |
+
+### 部署流程
+
+1. 推送代码到 GitHub，Vercel / Railway 自动触发重新部署
+2. `packages/shared` 必须先构建，否则 API 启动报错
+3. Railway 构建命令：`npm run build -w @opening/shared && npm run build -w @opening/api`
+4. Railway 启动命令：`npm run start -w @opening/api`
+
+### 环境变量
+
+Railway 环境变量（在 Railway Dashboard 设置）：
+
+```env
+DATABASE_URL=postgresql://postgres.xrrbkkblmwhlzfjqrznb:jianheng001@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres
+NODE_TLS_REJECT_UNAUTHORIZED=0   # 跳过 Supabase pooler 自签证书验证
+AUTH_SECRET=your-production-secret
+PORT=8080
+```
+
+Vercel 环境变量（在 Vercel Dashboard 设置）：
+
+```env
+VITE_API_URL=https://open-production-4d6b.up.railway.app
+```
+
+### 生产环境注意事项
+
+- 替换 `AUTH_SECRET` 为强随机值
 - 接入微信 `code2Session` 和手机号解密服务
 - 替换文件下载适配器为对象存储签名 URL
 - 配置 CORS 允许的域名白名单
@@ -288,8 +322,8 @@ SQL 文件位于 `apps/api/sql/` 目录：
 │   │   │   ├── app.controller.ts # API 路由
 │   │   │   └── run-migration.ts  # 迁移脚本执行工具
 │   │   └── sql/            # 数据库迁移文件
-│   ├── web/                # 客户端
-│   ├── admin/              # 管理后台
+│   ├── web/                # 客户端（Vercel 部署）
+│   ├── admin/              # 管理后台（Vercel 部署）
 │   │   ├── src/
 │   │   │   ├── App.tsx
 │   │   │   ├── utils/status.ts   # 状态标签与颜色
@@ -297,7 +331,8 @@ SQL 文件位于 `apps/api/sql/` 目录：
 │   │   │       ├── UserProjectsPage.tsx
 │   │   │       └── ProjectDetailPage.tsx
 │   │   └── dist/           # 构建产物
-│   └── mini/               # 微信小程序
+│   └── mini/               # 微信小程序（排除在 Vercel 部署外）
+├── vercel.json             # Vercel 部署配置
 ├── docker-compose.yml      # PostgreSQL 容器配置
 └── package.json            # 根配置
 ```
@@ -307,3 +342,4 @@ SQL 文件位于 `apps/api/sql/` 目录：
 - SWC 在 `.tsx` 文件中解析泛型时可能报错，使用 `as any` 规避
 - Windows PowerShell 不支持 `||` 和 `&` 操作符
 - 需要先构建 `@opening/shared` 包，否则 API 启动会报 TypeScript 错误
+- Vercel 构建已跳过 TypeScript 严格检查（`tsc -b`），仅执行 `vite build`
