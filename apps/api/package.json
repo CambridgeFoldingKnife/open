@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nest start --watch",
     "build": "nest build",
+    "start": "node dist/main.js",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "seed": "tsx src/seed-db.ts"
