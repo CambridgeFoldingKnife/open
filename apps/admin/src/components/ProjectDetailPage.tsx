@@ -1,9 +1,10 @@
-import{useState}from'react';
-import{Button,Card,Select,Space,Tabs,Tag,Typography}from'antd';
-import{ArrowLeftOutlined,DownloadOutlined}from'@ant-design/icons';
+import{useRef,useState}from'react';
+import{Button,Card,Space,Tabs,Tag,Typography,App}from'antd';
+import{ArrowLeftOutlined,FilePdfOutlined}from'@ant-design/icons';
 import type{OpeningProject,Role}from'@opening/shared';
 import{getProjectStatusTag}from'../utils/status';
-import{api,getToken}from'../api';
+import{api}from'../api';
+import{exportElementToPdf}from'../utils/exportPdf';
 import ReportView from'./ReportView';
 import ProductQuoteTab from'./ProductQuoteTab';
 
@@ -17,19 +18,33 @@ interface ProjectDetailPageProps{
 }
 
 export default function ProjectDetailPage({project:onBackProject,role,onBack,onAction}:ProjectDetailPageProps){
+  const{message}=App.useApp();
   const[project,setProject]=useState<OpeningProject>(onBackProject);
   const[loading,setLoading]=useState(false);
+  const[activeTab,setActiveTab]=useState<string>('report');
+  const[exporting,setExporting]=useState(false);
+  const reportRef=useRef<HTMLDivElement>(null);
+  const quoteRef=useRef<HTMLDivElement>(null);
 
   const statusTag=getProjectStatusTag(project);
   const canEdit=['consultant','admin'].includes(role||'');
 
-  const downloadFormat=(fmt:string)=>{
-    const token=getToken();
-    if(!token)return;
-    const a=document.createElement('a');
-    a.href=`${import.meta.env.VITE_API_URL||''}/projects/${project.id}/export?format=${fmt}&token=${token}`;
-    a.download=`opening-plan-${project.id}.${fmt}`;
-    a.click();
+  const handleExportPdf=async()=>{
+    const contentRef=activeTab==='report'?reportRef:quoteRef;
+    if(!contentRef.current||exporting)return;
+    setExporting(true);
+    try{
+      const filename=activeTab==='report'
+        ?`项目测算详情-${project.city}-${project.area}㎡`
+        :`产品报价单-${project.city}-${project.area}㎡`;
+      await exportElementToPdf(contentRef.current,filename);
+      message.success('PDF导出成功');
+    }catch(e){
+      message.error('导出失败，请重试');
+      console.error(e);
+    }finally{
+      setExporting(false);
+    }
   };
 
   const transition=async(next:'process'|'complete')=>{
@@ -95,31 +110,29 @@ export default function ProjectDetailPage({project:onBackProject,role,onBack,onA
         <div className="header-right">
           <Space>
             {renderActionButton()}
-            <Select 
-              defaultValue="" 
-              className="export-select"
-              style={{width:120}}
-              placeholder="导出"
-              onChange={(value)=>value&&downloadFormat(value)}
-              options={[
-                {value:'excel',label:'Excel'},
-                {value:'pdf',label:'PDF'},
-                {value:'md',label:'Markdown'}
-              ]}
-              optionLabelProp="label"
-            />
+            <Button 
+              icon={<FilePdfOutlined/>}
+              loading={exporting}
+              onClick={handleExportPdf}
+            >
+              导出 PDF
+            </Button>
           </Space>
         </div>
       </div>
 
       {/* 内容区 */}
       <Card>
-        <Tabs defaultActiveKey="report">
+        <Tabs activeKey={activeTab} onChange={setActiveTab}>
           <Tabs.TabPane tab="项目测算详情" key="report">
-            <ReportView project={project}/>
+            <div ref={reportRef}>
+              <ReportView project={project}/>
+            </div>
           </Tabs.TabPane>
           <Tabs.TabPane tab="产品报价单" key="quote">
-            <ProductQuoteTab project={project} role={role}/>
+            <div ref={quoteRef}>
+              <ProductQuoteTab project={project} role={role}/>
+            </div>
           </Tabs.TabPane>
         </Tabs>
       </Card>
