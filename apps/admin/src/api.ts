@@ -15,11 +15,4 @@ export async function api(path:string,options:RequestInit={}):Promise<any>{
   return res.json();
 }
 
-export async function downloadExcel(id:string){
-  const res=await fetch(base+'/api/projects/'+id+'/export',{headers:authHeaders()});
-  if(!res.ok)throw new Error('下载失败');
-  const blob=await res.blob();
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='开馆方案-'+id+'.xlsx';a.click();
-  URL.revokeObjectURL(url);
-}
+

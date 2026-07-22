@@ -877,3 +877,14 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
+
+/* PDF 导出期间隐藏交互元素 */
+.pdf-exporting button,
+.pdf-exporting .ant-btn,
+.pdf-exporting input,
+.pdf-exporting .ant-input,
+.pdf-exporting .ant-select,
+.pdf-exporting .ant-pagination,
+.pdf-exporting .pdf-hide {
+  display: none !important;
+}

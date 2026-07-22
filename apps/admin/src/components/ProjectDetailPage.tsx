@@ -87,12 +87,10 @@ export default function ProjectDetailPage({project:onBackProject,role,onBack}:Pr
             defaultValue="" 
             className="export-select"
             style={{width:120}}
-            placeholder="导出"
+            placeholder="导出 PDF"
             onChange={(value)=>value&&downloadFormat(value)}
             options={[
-              {value:'excel',label:'Excel'},
-              {value:'pdf',label:'PDF'},
-              {value:'md',label:'Markdown'}
+              {value:'pdf',label:'PDF'}
             ]}
             optionLabelProp="label"
           />

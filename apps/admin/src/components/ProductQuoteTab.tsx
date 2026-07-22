@@ -1,8 +1,9 @@
-import{useState}from'react';
+import{useRef,useState}from'react';
 import{Button,Form,Input,InputNumber,Modal,Popconfirm,Space,Table,Tag,Typography,App}from'antd';
-import{EditOutlined,DeleteOutlined,PlusOutlined}from'@ant-design/icons';
+import{EditOutlined,DeleteOutlined,FilePdfOutlined,PlusOutlined}from'@ant-design/icons';
 import type{OpeningProject,Recommendation,Role}from'@opening/shared';
 import{api}from'../api';
+import{exportElementToPdf}from'../utils/exportPdf';
 
 const{Title,Text}=Typography;
 
@@ -17,10 +18,22 @@ export default function ProductQuoteTab({project,role}:ProductQuoteTabProps){
   const[recommendations,setRecommendations]=useState<Recommendation[]>(project.recommendations);
   const[eqModalOpen,setEqModalOpen]=useState(false);
   const[editingEq,setEditingEq]=useState<Recommendation|null>(null);
+  const[exporting,setExporting]=useState(false);
   const[eqForm]=Form.useForm();
+  const quoteRef=useRef<HTMLDivElement>(null);
   const canEdit=['consultant','admin'].includes(role||'');
 
   const equipmentList=recommendations.filter(r=>r.kind==='equipment');
+
+  const handleExportPdf=async()=>{
+    if(!quoteRef.current||exporting)return;
+    setExporting(true);
+    try{
+      await exportElementToPdf(quoteRef.current,`设备报价明细-${project.city}-${project.area}㎡`);
+    }finally{
+      setExporting(false);
+    }
+  };
 
   const openAddEq=()=>{
     setEditingEq(null);
@@ -133,7 +146,7 @@ export default function ProductQuoteTab({project,role}:ProductQuoteTabProps){
   ];
 
   return(
-    <div className="product-quote-tab">
+    <div className="product-quote-tab" ref={quoteRef}>
       {/* 三档报价汇总 */}
       {quoteSummaries.length>0&&(
         <section className="quote-summary-section">
@@ -156,7 +169,10 @@ export default function ProductQuoteTab({project,role}:ProductQuoteTabProps){
       <section className="equipment-table-section">
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
           <Title level={5}style={{margin:0}}>设备报价明细</Title>
-          {canEdit&&<Button type="primary"size="small"icon={<PlusOutlined/>}onClick={openAddEq}>新增产品</Button>}
+          <Space>
+            <Button size="small"icon={<FilePdfOutlined/>}loading={exporting}onClick={handleExportPdf}>导出 PDF</Button>
+            {canEdit&&<Button type="primary"size="small"icon={<PlusOutlined/>}onClick={openAddEq}>新增产品</Button>}
+          </Space>
         </div>
         <Table
           dataSource={equipmentList}
